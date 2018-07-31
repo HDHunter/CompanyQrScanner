@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ChopeScanner</string>
+    <string name="msg_default_status">将扫描框对准二维码，即可自动扫描</string>
+</resources>
