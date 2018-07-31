@@ -11,3 +11,6 @@
 
 ### 三，效果图
 
+<img src="./captures/Scanner0.png">
+<img src="./captures/Scanner1.png">
+<img src="./captures/Scanner2.png">
