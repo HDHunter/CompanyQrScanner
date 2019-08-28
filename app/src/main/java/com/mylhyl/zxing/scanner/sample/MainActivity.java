@@ -153,7 +153,8 @@ public class MainActivity extends BasicActivity {
         findViewById(R.id.button_deeplink).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(MainActivity.this, DeepLinkActivity.class);
+                startActivityForResult(intent, 1212);
             }
         });
     }
