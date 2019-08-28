@@ -7,7 +7,7 @@ import com.bumptech.glide.request.target.ViewTarget;
 /**
  * Created by hupei on 2016/7/7.
  */
-public class APP extends Application {
+public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();

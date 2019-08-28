@@ -6,13 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.text.Layout;
-import android.text.StaticLayout;
-import android.text.TextPaint;
 import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
@@ -38,11 +34,9 @@ public class OptionsScannerActivity extends Activity implements OnScannerComplet
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_scanner_options);
 
-        mScannerView = (ScannerView) findViewById(R.id.scanner_view);
+        mScannerView = findViewById(R.id.scanner_view);
 
         mScannerView.setOnScannerCompletionListener(this);
-
-//        mScannerView.toggleLight(true);
 
         ScannerOptions.Builder builder = new ScannerOptions.Builder();
         builder

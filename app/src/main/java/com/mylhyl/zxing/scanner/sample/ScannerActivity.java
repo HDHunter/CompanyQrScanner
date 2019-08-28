@@ -50,12 +50,11 @@ public class ScannerActivity extends DeCodeActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
-        mScannerView = (ScannerView) findViewById(R.id.scanner_view);
+        mScannerView = findViewById(R.id.scanner_view);
         mScannerView.setOnScannerCompletionListener(this);
 
-        ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+        ToggleButton toggleButton = findViewById(R.id.toggleButton);
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -121,6 +120,7 @@ public class ScannerActivity extends DeCodeActivity {
             case EXTRA_LASER_LINE_MODE_2:
                 mScannerView.setLaserColor(Color.RED);
                 break;
+            default:
         }
     }
 

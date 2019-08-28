@@ -40,10 +40,6 @@ public abstract class BasicScannerActivity extends AppCompatActivity implements
 
     /**
      * 子类实现，根据 ParsedResultType 处理业务
-     *
-     * @param result
-     * @param type
-     * @param bundle
      */
     abstract void onResultActivity(Result result, ParsedResultType type, Bundle bundle);
 
@@ -69,6 +65,8 @@ public abstract class BasicScannerActivity extends AppCompatActivity implements
         if (mReturnScanResult) {
             onReturnScanResult(rawResult);
             return;
+        } else {
+            Toast.makeText(this, parsedResult.getDisplayResult(), Toast.LENGTH_LONG).show();
         }
         final Bundle bundle = new Bundle();
         final ParsedResultType type = parsedResult.getType();
@@ -113,7 +111,7 @@ public abstract class BasicScannerActivity extends AppCompatActivity implements
                 public void run() {
                     onResultActivity(rawResult, type, bundle);
                 }
-            }, 3 * 1000);
+            }, 2 * 1000);
         }
     }
 

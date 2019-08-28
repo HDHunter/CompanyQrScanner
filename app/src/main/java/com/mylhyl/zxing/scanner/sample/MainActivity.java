@@ -39,15 +39,15 @@ public class MainActivity extends BasicActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        tvResult = (TextView) findViewById(R.id.textView);
-        imageView = (ImageView) findViewById(R.id.imageView);
+        tvResult = findViewById(R.id.textView);
+        imageView = findViewById(R.id.imageView);
 
-        final ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
-        final ToggleButton toggleButton1 = (ToggleButton) findViewById(R.id.toggleButton1);
-        final ToggleButton toggleButton2 = (ToggleButton) findViewById(R.id.toggleButton2);
+        final ToggleButton toggleButton = findViewById(R.id.toggleButton);
+        final ToggleButton toggleButton1 = findViewById(R.id.toggleButton1);
+        final ToggleButton toggleButton2 = findViewById(R.id.toggleButton2);
 
-        final CheckBox checkBox = (CheckBox) findViewById(R.id.checkBox);
-        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        final CheckBox checkBox = findViewById(R.id.checkBox);
+        RadioGroup radioGroup = findViewById(R.id.radioGroup);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -61,11 +61,12 @@ public class MainActivity extends BasicActivity {
                     case R.id.radioButton3:
                         laserMode = ScannerActivity.EXTRA_LASER_LINE_MODE_2;
                         break;
+                    default:
                 }
             }
         });
 
-        RadioGroup radioGroup1 = (RadioGroup) findViewById(R.id.radioGroup1);
+        RadioGroup radioGroup1 = findViewById(R.id.radioGroup1);
         radioGroup1.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -79,6 +80,7 @@ public class MainActivity extends BasicActivity {
                     case R.id.radioButton6:
                         scanMode = ScannerActivity.EXTRA_SCAN_MODE_2;
                         break;
+                    default:
                 }
             }
         });
@@ -102,19 +104,16 @@ public class MainActivity extends BasicActivity {
             }
         });
 
-        eitText = (EditText) findViewById(R.id.editText);
+        eitText = findViewById(R.id.editText);
 
         findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Resources res = getResources();
                 Bitmap logoBitmap = BitmapFactory.decodeResource(res, R.mipmap.connect_logo);
-//                Bitmap qrBg = BitmapFactory.decodeResource(res, R.mipmap.wb_wlog_blow_bg_night);
                 String qrContent = eitText.getText().toString();
                 Bitmap bitmap = new QREncode.Builder(MainActivity.this)
-//                        .setColor(getResources().getColor(R.color.colorPrimary))//二维码颜色
                         .setColors(Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK)//二维码彩色
-//                        .setQrBackground(qrBg)//二维码背景
                         .setMargin(0)//二维码边框
                         .setParsedResultType(TextUtils.isEmpty(qrContent) ? ParsedResultType.URI : ParsedResultType.TEXT)//二维码类型
                         //二维码内容
@@ -124,7 +123,6 @@ public class MainActivity extends BasicActivity {
                         .build().encodeAsBitmap();
                 imageView.setImageBitmap(bitmap);
                 tvResult.setText("单击识别图中二维码");
-
             }
         });
 
@@ -146,9 +144,16 @@ public class MainActivity extends BasicActivity {
                 //step 3 转bytes
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-
-                DeCodeActivity.gotoActivity(MainActivity.this, baos.toByteArray());//step 4
+                //step 4
+                startActivity(new Intent(MainActivity.this, DeCodeActivity.class).putExtra("bytes", baos.toByteArray()));
                 imageView.setDrawingCacheEnabled(false);//step 5
+            }
+        });
+
+        findViewById(R.id.button_deeplink).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }

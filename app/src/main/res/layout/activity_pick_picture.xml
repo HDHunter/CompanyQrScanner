@@ -5,8 +5,6 @@
     android:orientation="vertical"
     tools:context="com.mylhyl.zxing.scanner.sample.picture.PickPictureActivity">
 
-    <include layout="@layout/include_toolbar" />
-
     <GridView
         android:id="@+id/child_grid"
         android:layout_width="match_parent"

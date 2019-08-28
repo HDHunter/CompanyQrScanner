@@ -1,6 +1,5 @@
 package com.mylhyl.zxing.scanner.sample;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -72,7 +71,4 @@ public class DeCodeActivity extends BasicScannerActivity {
         }
     }
 
-    public static void gotoActivity(Activity activity, byte[] bytes) {
-        activity.startActivity(new Intent(activity, DeCodeActivity.class).putExtra("bytes", bytes));
-    }
 }

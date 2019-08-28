@@ -6,8 +6,6 @@
     android:orientation="vertical"
     tools:context=".result.TextActivity">
 
-    <include layout="@layout/include_toolbar" />
-
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"

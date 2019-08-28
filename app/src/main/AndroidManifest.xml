@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".APP"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -53,6 +53,10 @@
         <activity
             android:name=".result.BarcodeActivity"
             android:label="barcode" />
+        <activity
+            android:name=".DeepLinkActivity"
+            android:label="deeplink" />
+        <activity android:name=".EditActivity" />
     </application>
 
 </manifest>
