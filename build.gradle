@@ -1,19 +1,37 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     repositories {
-        maven {
-            url 'http://172.16.21.249:8890/repository/maven-public/'
-        }
+        google()
+        jcenter()
+        maven { url 'http://developer.huawei.com/repo/' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.2'
+        classpath 'com.android.tools.build:gradle:3.5.0'
     }
 }
 
 allprojects {
     repositories {
+        google()
+        jcenter()
+
         maven {
-            url 'http://172.16.21.249:8890/repository/maven-public/'
+            url 'http://developer.huawei.com/repo/'
+        }
+        maven {
+            url "http://nexus.yodo1.com:8081/repository/Yodo1SDK/"
+        }
+        maven {
+            url 'https://jitpack.io'
+        }
+        maven {
+            url "https://applovin.bintray.com/Android-Adapter-SDKs"
+        }
+        maven {
+            url 'https://dl.bintray.com/ironsource-mobile/android-sdk'
+        }
+        jcenter {
+            url = 'https://dl.bintray.com/swrve-inc/android'
         }
     }
     tasks.withType(Javadoc) {
