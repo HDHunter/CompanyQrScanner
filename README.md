@@ -14,3 +14,8 @@
 <img src="./captures/Scanner0.png">
 <img src="./captures/Scanner1.png">
 <img src="./captures/Scanner2.png">
+
+
+### 四，做了一个应用抽屉。作为一个 module在项目中。为了方便吧。
+
+<img src="./captures/appinfosDesl.png">

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="4dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imageview"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:background="#f0f0f0" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/imageview"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/applable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#000"
+                android:textSize="12sp"
+                tools:text="appName" />
+
+            <TextView
+                android:id="@+id/appname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#000"
+                android:textSize="12sp"
+                tools:text="appName" />
+
+            <TextView
+                android:id="@+id/packagename"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#000"
+                android:textSize="12sp"
+                tools:text="appName" />
+
+            <TextView
+                android:id="@+id/versioncode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#000"
+                android:textSize="12sp"
+                tools:text="appName" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="right"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/systemflag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:lines="1"
+                android:singleLine="true"
+                android:textColor="#000"
+                android:textSize="12sp"
+                tools:text="appName" />
+
+            <Button
+                android:id="@+id/launcher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#3c3c3c"
+                android:gravity="right"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:text="启动"
+                android:textAllCaps="false"
+                android:textColor="#000"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:background="#c03c3c"
+                android:gravity="right"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:text="卸载"
+                android:textAllCaps="false"
+                android:textColor="#000"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>
