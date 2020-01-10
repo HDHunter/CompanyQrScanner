@@ -2,13 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hunter.appinfomonitor">
 
-    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.FLASHLIGHT" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:name=".MyApplication"
@@ -25,7 +24,39 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="yodo1" />
+            </intent-filter>
         </activity>
+
+        <service
+            android:name=".FloatServerice"
+            android:enabled="true"
+            android:exported="true" />
+
+        <service
+            android:name=".WatchingService"
+            android:enabled="true"></service>
+        <service
+            android:name=".floatui.WatchingAccessibilityService"
+            android:description="@string/app_name"
+            android:enabled="true"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility" />
+
+        </service>
+
+        <receiver android:name=".floatui.NotificationActionReceiver">
+            <intent-filter>
+                <action android:name="com.willme.topactivity.ACTION_NOTIFICATION_RECEIVER" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

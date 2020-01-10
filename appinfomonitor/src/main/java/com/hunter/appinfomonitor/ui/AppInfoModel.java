@@ -1,4 +1,4 @@
-package com.hunter.appinfomonitor;
+package com.hunter.appinfomonitor.ui;
 
 import android.content.pm.ApplicationInfo;
 

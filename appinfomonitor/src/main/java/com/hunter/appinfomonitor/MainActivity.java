@@ -1,5 +1,6 @@
 package com.hunter.appinfomonitor;
 
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -12,6 +13,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+
+import com.hunter.appinfomonitor.floatui.TasksWindow;
+import com.hunter.appinfomonitor.ui.AppInfoAdapter;
+import com.hunter.appinfomonitor.ui.AppInfoModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +68,22 @@ public class MainActivity extends AppCompatActivity {
                 adapter.setFilter(1, s1);
             }
         });
+
+        findViewById(R.id.togglebutton2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TasksWindow.show(MainActivity.this, "");
+                startService(new Intent(MainActivity.this, WatchingService.class));
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                    startForegroundService(new Intent(MainActivity.this, FloatServerice.class));
+//                } else {
+//                    startService(new Intent(MainActivity.this, FloatServerice.class));
+//                }
+                Intent intent = new Intent();
+                intent.setAction("android.settings.ACCESSIBILITY_SETTINGS");
+                startActivity(intent);
+            }
+        });
     }
 
     private void setData() {
@@ -81,4 +102,5 @@ public class MainActivity extends AppCompatActivity {
         }
         adapter.setData(infos);
     }
+
 }

@@ -1,4 +1,4 @@
-package com.hunter.appinfomonitor;
+package com.hunter.appinfomonitor.ui;
 
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -14,10 +14,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hunter.appinfomonitor.MainActivity;
+import com.hunter.appinfomonitor.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
-class AppInfoAdapter extends RecyclerView.Adapter {
+public class AppInfoAdapter extends RecyclerView.Adapter {
 
 
     private MainActivity context;
