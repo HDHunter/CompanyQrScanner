@@ -10,6 +10,7 @@
 简洁高效，而且方便定制。
 
 ### 三，效果图
+zxing提供扫码和生成，cygadapter库提供相册选择，glide提供图片下载
 
 <img src="./captures/Scanner0.png">
 <img src="./captures/Scanner1.png">
@@ -17,5 +18,9 @@
 
 
 ### 四，做了一个应用抽屉。作为一个 module在项目中。为了方便吧。
+利用accesibility Service提供支持。
+AlarmManager提供刷新。
 
 <img src="./captures/appinfosDesl.png">
+<img src="./captures/appinfo2.png">
+<img src="./captures/appinfo3.png">
