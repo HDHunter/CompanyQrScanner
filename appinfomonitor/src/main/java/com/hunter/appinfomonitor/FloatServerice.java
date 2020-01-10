@@ -16,7 +16,10 @@ import java.util.List;
  * 浮动气泡的服务
  *
  * @author Hunter
+ * <p>
+ * //    implementation 'com.github.yhaolpz:FloatWindow:1.0.9'
  */
+@Deprecated
 public class FloatServerice extends Service {
 
 
