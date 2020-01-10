@@ -51,6 +51,7 @@ public class NotificationActionReceiver extends BroadcastReceiver {
                 TasksWindow.dismiss(context);
                 cancelNotification(context);
                 break;
+            default:
         }
     }
 

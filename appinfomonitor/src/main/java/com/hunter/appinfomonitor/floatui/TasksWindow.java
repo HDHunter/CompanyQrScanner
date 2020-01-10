@@ -17,16 +17,12 @@ public class TasksWindow {
     private static View sView;
 
     public static void init(final Context context) {
-        sWindowManager = (WindowManager) context.getApplicationContext()
-                .getSystemService(Context.WINDOW_SERVICE);
+        sWindowManager = (WindowManager) context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
 
-        sWindowParams = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT, 2005, 0x18,
+        sWindowParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, 2005, 0x18,
                 PixelFormat.TRANSLUCENT);
         sWindowParams.gravity = Gravity.LEFT + Gravity.TOP;
-        sView = LayoutInflater.from(context).inflate(R.layout.window_tasks,
-                null);
+        sView = LayoutInflater.from(context).inflate(R.layout.window_tasks, null);
     }
 
     public static void show(Context context, final String text) {
@@ -38,6 +34,7 @@ public class TasksWindow {
         try {
             sWindowManager.addView(sView, sWindowParams);
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -45,6 +42,7 @@ public class TasksWindow {
         try {
             sWindowManager.removeView(sView);
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
