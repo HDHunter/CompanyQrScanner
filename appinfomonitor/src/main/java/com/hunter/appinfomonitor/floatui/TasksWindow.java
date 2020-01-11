@@ -16,7 +16,7 @@ public class TasksWindow {
     private static WindowManager sWindowManager;
     private static View sView;
 
-    public static void init(final Context context) {
+    private static void init(final Context context) {
         sWindowManager = (WindowManager) context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
 
         sWindowParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, 2005, 0x18,

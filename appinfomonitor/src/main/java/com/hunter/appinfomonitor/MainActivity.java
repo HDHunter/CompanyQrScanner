@@ -14,7 +14,6 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 
-import com.hunter.appinfomonitor.floatui.TasksWindow;
 import com.hunter.appinfomonitor.ui.AppInfoAdapter;
 import com.hunter.appinfomonitor.ui.AppInfoModel;
 
@@ -54,12 +53,10 @@ public class MainActivity extends AppCompatActivity {
         searc.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
@@ -72,13 +69,9 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.togglebutton2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TasksWindow.show(MainActivity.this, "");
+                //show Alarm Service
                 startService(new Intent(MainActivity.this, WatchingService.class));
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                    startForegroundService(new Intent(MainActivity.this, FloatServerice.class));
-//                } else {
-//                    startService(new Intent(MainActivity.this, FloatServerice.class));
-//                }
+                //show Accessibility Setting.
                 Intent intent = new Intent();
                 intent.setAction("android.settings.ACCESSIBILITY_SETTINGS");
                 startActivity(intent);

@@ -37,7 +37,7 @@
 
         <service
             android:name=".WatchingService"
-            android:enabled="true"></service>
+            android:enabled="true"/>
         <service
             android:name=".floatui.WatchingAccessibilityService"
             android:description="@string/app_name"
@@ -54,7 +54,7 @@
 
         <receiver android:name=".floatui.NotificationActionReceiver">
             <intent-filter>
-                <action android:name="com.willme.topactivity.ACTION_NOTIFICATION_RECEIVER" />
+                <action android:name="${applicationId}.ACTION_NOTIFICATION_RECEIVER" />
             </intent-filter>
         </receiver>
     </application>
