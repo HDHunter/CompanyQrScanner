@@ -9,12 +9,18 @@ import android.view.accessibility.AccessibilityEvent;
  * Created by Wen on 1/14/15.
  */
 public class WatchingAccessibilityService extends AccessibilityService {
+
+
     private static WatchingAccessibilityService sInstance;
 
     @SuppressLint("NewApi")
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        TasksWindow.show(this, event.getPackageName() + "\n" + event.getClassName());
+        if (SPUtils.getState(this)) {
+            TasksWindow.show(this, event.getPackageName() + "\n" + event.getClassName());
+        } else {
+            TasksWindow.dismiss(this);
+        }
     }
 
     @Override
@@ -34,10 +40,6 @@ public class WatchingAccessibilityService extends AccessibilityService {
         TasksWindow.dismiss(this);
         NotificationActionReceiver.cancelNotification(this);
         return super.onUnbind(intent);
-    }
-
-    public static WatchingAccessibilityService getInstance() {
-        return sInstance;
     }
 
 }

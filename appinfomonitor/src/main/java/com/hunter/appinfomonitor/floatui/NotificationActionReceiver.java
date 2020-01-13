@@ -34,6 +34,7 @@ public class NotificationActionReceiver extends BroadcastReceiver {
         int command = intent.getIntExtra(EXTRA_NOTIFICATION_ACTION, -1);
         switch (command) {
             case ACTION_RESUME:
+                SPUtils.setState(context, true);
                 showNotification(context, false);
                 if (Build.VERSION.SDK_INT < 21) {
                     ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -46,11 +47,13 @@ public class NotificationActionReceiver extends BroadcastReceiver {
                 }
                 break;
             case ACTION_PAUSE:
+                SPUtils.setState(context, true);
                 showNotification(context, true);
                 TasksWindow.dismiss(context);
                 break;
             case ACTION_STOP:
             default:
+                SPUtils.setState(context, false);
                 TasksWindow.dismiss(context);
                 cancelNotification(context);
                 break;

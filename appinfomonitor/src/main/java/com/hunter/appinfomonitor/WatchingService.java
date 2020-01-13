@@ -17,6 +17,7 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.hunter.appinfomonitor.floatui.NotificationActionReceiver;
+import com.hunter.appinfomonitor.floatui.SPUtils;
 import com.hunter.appinfomonitor.floatui.TasksWindow;
 
 import java.util.List;
@@ -58,14 +59,20 @@ public class WatchingService extends Service {
             List<RunningTaskInfo> rtis = ams.getRunningTasks(1);
             ComponentName name = rtis.get(0).topActivity;
             String act = name.getPackageName() + "\n" + name.getClassName();
-            if (!act.equals(text)) {
-                text = act;
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        TasksWindow.show(WatchingService.this, text);
-                    }
-                });
+
+            if (SPUtils.getState(WatchingService.this)) {
+                if (!act.equals(text)) {
+                    text = act;
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            TasksWindow.show(WatchingService.this, text);
+                        }
+                    });
+                }
+            } else {
+                mHandler.removeCallbacksAndMessages(null);
+                TasksWindow.dismiss(WatchingService.this);
             }
         }
     }
