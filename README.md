@@ -2,7 +2,13 @@
 
 项目为了普通IT公司需要的各种小工具。
 **扫码工具
+https://github.com/HDHunter/CompanyQrScanner/releases/download/v1.0.1/company_scan.apk
+<img src="./captures/QQ20200116-141252.png">
+
 **app监控
+release下载：
+https://github.com/HDHunter/CompanyQrScanner/releases/download/v1.0.0/appinfo_monitor.apk
+<img src="./captures/QQ20200116-134305.png">
 
 
 ### 二,作用
