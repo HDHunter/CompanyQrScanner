@@ -179,7 +179,12 @@ public class AppInfoAdapter extends RecyclerView.Adapter {
                     Toast.makeText(context, "卸载错误：" + appInfoModel.getPackageName(), Toast.LENGTH_SHORT).show();
                 }
             } else {
-
+                AppInfoModel appInfoModel = data.get(position);
+                Intent mIntent = new Intent();
+                mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+                mIntent.setData(Uri.fromParts("package", appInfoModel.getPackageName(), null));
+                context.startActivity(mIntent);
             }
         }
     }
