@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="4dp">
+    android:paddingTop="0dp"
+    android:paddingBottom="0dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -13,8 +14,8 @@
 
         <ImageView
             android:id="@+id/imageview"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_centerVertical="true"
@@ -33,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#000"
-                android:textSize="12sp"
+                android:textSize="8sp"
                 tools:text="appName" />
 
             <TextView
@@ -41,7 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#000"
-                android:textSize="12sp"
+                android:textSize="8sp"
                 tools:text="appName" />
 
             <TextView
@@ -49,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#000"
-                android:textSize="12sp"
+                android:textSize="8sp"
                 tools:text="appName" />
 
             <TextView
@@ -57,7 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#000"
-                android:textSize="12sp"
+                android:textSize="8sp"
                 tools:text="appName" />
 
         </LinearLayout>
@@ -66,7 +67,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:gravity="right"
             android:orientation="vertical">
 
@@ -74,39 +74,42 @@
                 android:id="@+id/systemflag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="right"
-                android:lines="1"
-                android:singleLine="true"
                 android:textColor="#000"
-                android:textSize="12sp"
+                android:textSize="8sp"
                 tools:text="appName" />
 
-            <Button
-                android:id="@+id/launcher"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#3c3c3c"
-                android:gravity="right"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:text="启动"
-                android:textAllCaps="false"
-                android:textColor="#000"
-                android:textSize="12sp" />
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/delete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:background="#c03c3c"
-                android:gravity="right"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:text="卸载"
-                android:textAllCaps="false"
-                android:textColor="#000"
-                android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/launcher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#3c3c3c"
+                    android:gravity="right"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:padding="3dp"
+                    android:text="启动"
+                    android:textAllCaps="false"
+                    android:textColor="#000"
+                    android:textSize="8sp" />
+
+                <TextView
+                    android:id="@+id/delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:background="#c03c3c"
+                    android:gravity="right"
+                    android:padding="3dp"
+                    android:text="卸载"
+                    android:textAllCaps="false"
+                    android:textColor="#000"
+                    android:textSize="8sp" />
+            </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

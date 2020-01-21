@@ -131,7 +131,7 @@ public class AppInfoAdapter extends RecyclerView.Adapter {
         TextView packageName;
         TextView versionCode;
         TextView systemflag;
-        Button luacher, delete;
+        TextView luacher, delete;
         int position;
 
         public AppViewHolder(View itemView) {

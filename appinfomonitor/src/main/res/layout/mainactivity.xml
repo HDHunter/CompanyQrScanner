@@ -7,6 +7,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:orientation="horizontal">
 
         <Button
@@ -38,6 +40,28 @@
             android:background="@null"
             android:hint="搜索应用"
             android:imeOptions="actionSearch" />
+
+        <Button
+            android:id="@+id/togglebutton3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:padding="6dp"
+            android:text="显示yodo1"
+            android:textAllCaps="false"
+            android:textSize="10sp" />
+
+        <Button
+            android:id="@+id/togglebutton4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:padding="6dp"
+            android:text="yodo1Debug"
+            android:textAllCaps="false"
+            android:textSize="10sp" />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
