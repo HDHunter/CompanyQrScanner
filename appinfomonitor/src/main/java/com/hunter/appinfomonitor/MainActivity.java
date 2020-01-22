@@ -1,6 +1,8 @@
 package com.hunter.appinfomonitor;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -16,8 +18,12 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.StringBuilderPrinter;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hunter.appinfomonitor.ui.AppInfoAdapter;
@@ -30,6 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,13 +54,6 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = new AppInfoAdapter(this);
         recyclerView.setAdapter(adapter);
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                setData();
-            }
-        });
 
         findViewById(R.id.togglebutton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +75,18 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 String s1 = s.toString();
                 adapter.setFilter(1, s1);
+            }
+        });
+        searc.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    String s1 = v.getText().toString();
+                    adapter.setFilter(1, s1);
+                    return true;
+                } else {
+                    return false;
+                }
             }
         });
 
@@ -164,6 +176,33 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
             }
         });
+        findViewById(R.id.togglebutton5).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("PackageInfo");
+                try {
+                    builder.setMessage(updateInfos());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.create().show();
+            }
+        });
+
+        recyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setData();
+            }
+        }, 100);
     }
 
     private void setData() {
@@ -183,4 +222,37 @@ public class MainActivity extends AppCompatActivity {
         adapter.setData(infos);
     }
 
+    private String updateInfos() {
+        StringBuilder sb = new StringBuilder();
+        StringBuilderPrinter ps = new StringBuilderPrinter(sb);
+        String display = "Display:" + Build.DISPLAY;
+        ps.println(display);
+        String print = "FingerPrint:";
+        ps.println(Build.FINGERPRINT);
+        ps.println(print);
+        ps.println("");
+        String hardware = "HardWare:" + Build.HARDWARE;
+        ps.println(hardware);
+        String host = "Host:" + Build.HOST;
+        ps.println(host);
+        String id = "ID:" + Build.ID;
+        ps.println(id);
+        String msnufactur = "Manufacturer:" + Build.MANUFACTURER;
+        ps.println(msnufactur);
+        String model = "Module:" + Build.MODEL;
+        ps.println(model);
+        String product = "Product:" + Build.PRODUCT;
+        ps.println(product);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            String abis = "SupportAbis:" + Arrays.toString(Build.SUPPORTED_ABIS);
+            ps.println(abis);
+        } else {
+            String abi = "CPUabi:" + Build.CPU_ABI;
+            ps.println(abi);
+            String abi2 = "CPUabi2:" + Build.CPU_ABI2;
+            ps.println(abi2);
+        }
+        Log.e("zzzzz", "update Infos");
+        return sb.toString();
+    }
 }

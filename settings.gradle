@@ -1,2 +1,3 @@
-include ':zxingscanner', ':app'
+include ':zxingscanner'
+include ':app'
 include ':appinfomonitor'
