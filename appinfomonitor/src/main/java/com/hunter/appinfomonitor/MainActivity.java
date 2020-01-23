@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     private UpdateSwitchReceiver mReceiver;
     private Button floatBtn;
     private static boolean openfloat = true;
+    private RecyclerView recyclerView;
+    private TextView infoshow;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

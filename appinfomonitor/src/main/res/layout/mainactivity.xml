@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -12,26 +13,28 @@
         android:focusableInTouchMode="true"
         android:orientation="horizontal">
 
-        <Button
+        <TextView
             android:id="@+id/togglebutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="#50303030"
             android:minWidth="0dp"
             android:minHeight="0dp"
-            android:padding="1dp"
-            android:text="hide系统ap"
+            android:text="系统/用户"
             android:textAllCaps="false"
+            android:textColor="#000"
             android:textSize="10sp" />
 
-        <Button
+        <TextView
             android:id="@+id/togglebutton2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="0dp"
             android:minHeight="0dp"
-            android:padding="3dp"
+            android:padding="2dp"
             android:text="界面"
             android:textAllCaps="false"
+            android:textColor="#000"
             android:textSize="10sp" />
 
         <EditText
@@ -47,38 +50,63 @@
             android:singleLine="true"
             android:textSize="10sp" />
 
-        <Button
+        <TextView
             android:id="@+id/togglebutton5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="0dp"
             android:minHeight="0dp"
-            android:padding="2dp"
-            android:text="SysInfo"
+            android:padding="0dp"
+            android:text="系统信息"
             android:textAllCaps="false"
+            android:textColor="#000"
             android:textSize="10sp" />
 
-        <Button
+        <TextView
             android:id="@+id/togglebutton3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="#50303030"
             android:minWidth="0dp"
             android:minHeight="0dp"
-            android:padding="6dp"
-            android:text="显示yodo1"
+            android:padding="2dp"
+            android:text="yodo1"
             android:textAllCaps="false"
+            android:textColor="#000"
             android:textSize="10sp" />
 
-        <Button
+        <TextView
             android:id="@+id/togglebutton4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="0dp"
             android:minHeight="0dp"
-            android:padding="6dp"
-            android:text="yodo1Debug"
+            android:padding="0dp"
+            android:text="yodo1debug"
             android:textAllCaps="false"
             android:textSize="10sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/infoshow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:text=""
+            android:textAllCaps="false"
+            android:textColor="#000"
+            android:textSize="10sp"
+            tools:text="系统应用：10个，用户应用2个，yodo1应用1个" />
+
+
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
