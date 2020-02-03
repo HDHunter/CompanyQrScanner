@@ -2,14 +2,19 @@ package com.hunter.appinfomonitor;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,10 +27,14 @@ import android.util.StringBuilderPrinter;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hunter.appinfomonitor.floatui.SPHelper;
+import com.hunter.appinfomonitor.floatui.TasksWindow;
+import com.hunter.appinfomonitor.floatui.WatchingAccessibilityService;
 import com.hunter.appinfomonitor.ui.AppInfoAdapter;
 import com.hunter.appinfomonitor.ui.AppInfoModel;
 
@@ -42,6 +51,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private AppInfoAdapter adapter;
+    public static final String ACTION_STATE_CHANGED = BuildConfig.APPLICATION_ID + ".ACTION_STATE_CHANGED";
+    public static final String EXTRA_FROM_QS_TILE = "from_qs_tile";
+    private UpdateSwitchReceiver mReceiver;
+    private Button floatBtn;
+    private static boolean openfloat = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -89,16 +103,91 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-        findViewById(R.id.togglebutton2).setOnClickListener(new View.OnClickListener() {
+        floatBtn = findViewById(R.id.togglebutton2);
+        floatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //show Alarm Service
-                startService(new Intent(MainActivity.this, WatchingService.class));
-                //show Accessibility Setting.
-                Intent intent = new Intent();
-                intent.setAction("android.settings.ACCESSIBILITY_SETTINGS");
-                startActivity(intent);
+                //showNotification.HunterZhang,2020年2月3日19:37:15
+                if (SPHelper.hasQSTileAdded(MainActivity.this)) {
+                    SPHelper.setNotificationToggleEnabled(MainActivity.this, !openfloat);
+                } else if (openfloat) {
+                    Toast.makeText(MainActivity.this, R.string.toast_add_tile, Toast.LENGTH_LONG).show();
+                } else {
+                    SPHelper.setNotificationToggleEnabled(MainActivity.this, false);
+                }
+
+                //showFloatButton.HunterZhang
+                if (openfloat && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 && !Settings.canDrawOverlays(MainActivity.this)) {
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setMessage(R.string.dialog_enable_overlay_window_msg)
+                            .setPositiveButton(R.string.dialog_enable_overlay_window_positive_btn
+                                    , new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                                            intent.setData(Uri.parse("package:" + getPackageName()));
+                                            startActivity(intent);
+                                            dialog.dismiss();
+                                        }
+                                    })
+                            .setNegativeButton(android.R.string.cancel
+                                    , new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            SPHelper.setIsShowWindow(MainActivity.this, false);
+                                            refreshWindowSwitch();
+                                        }
+                                    })
+                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialog) {
+                                    SPHelper.setIsShowWindow(MainActivity.this, false);
+                                    refreshWindowSwitch();
+                                }
+                            })
+                            .create()
+                            .show();
+                    return;
+                } else if (WatchingAccessibilityService.getInstance() == null) {
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setMessage(R.string.dialog_enable_accessibility_msg)
+                            .setPositiveButton(R.string.dialog_enable_accessibility_positive_btn
+                                    , new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            SPHelper.setIsShowWindow(MainActivity.this, true);
+                                            Intent intent = new Intent();
+                                            intent.setAction("android.settings.ACCESSIBILITY_SETTINGS");
+                                            startActivity(intent);
+                                        }
+                                    })
+                            .setNegativeButton(android.R.string.cancel
+                                    , new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            refreshWindowSwitch();
+                                        }
+                                    })
+                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialog) {
+                                    refreshWindowSwitch();
+                                }
+                            })
+                            .create()
+                            .show();
+                    SPHelper.setIsShowWindow(MainActivity.this, true);
+                    return;
+                }
+                SPHelper.setIsShowWindow(MainActivity.this, openfloat);
+                TasksWindow.show(MainActivity.this, getPackageName() + "\n" + getClass().getName());
+
+                if (!openfloat) {
+                    TasksWindow.dismiss(MainActivity.this);
+                } else {
+                    TasksWindow.show(MainActivity.this, getPackageName() + "\n" + getClass().getName());
+                }
+                openfloat = !openfloat;
             }
         });
 
@@ -203,6 +292,13 @@ public class MainActivity extends AppCompatActivity {
                 setData();
             }
         }, 100);
+        if (getResources().getBoolean(R.bool.use_watching_service)) {
+            TasksWindow.show(this, "");
+            startService(new Intent(this, WatchingService.class));
+        }
+
+        mReceiver = new UpdateSwitchReceiver();
+        registerReceiver(mReceiver, new IntentFilter(ACTION_STATE_CHANGED));
     }
 
     private void setData() {
@@ -254,5 +350,29 @@ public class MainActivity extends AppCompatActivity {
         }
         Log.e("zzzzz", "update Infos");
         return sb.toString();
+    }
+
+
+    class UpdateSwitchReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            refreshWindowSwitch();
+            refreshNotificationSwitch();
+        }
+    }
+
+    private void refreshWindowSwitch() {
+//        mWindowSwitch.setChecked(SPHelper.isShowWindow(this));
+//        if (getResources().getBoolean(R.bool.use_accessibility_service)) {
+//            if (WatchingAccessibilityService.getInstance() == null) {
+//                mWindowSwitch.setChecked(false);
+//            }
+//        }
+    }
+
+    private void refreshNotificationSwitch() {
+//        if (mNotificationSwitch != null) {
+//            mNotificationSwitch.setChecked(!SPHelper.isNotificationToggleEnabled(this));
+//        }
     }
 }

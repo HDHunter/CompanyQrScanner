@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -14,10 +15,12 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:resizeableActivity="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,20 +31,27 @@
                 <action android:name="android.intent.action.VIEW" />
                 <data android:scheme="yodo1" />
             </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/app_shortcuts" />
         </activity>
 
-        <service
-            android:name=".FloatServerice"
-            android:enabled="true"
-            android:exported="true" />
+
+        <activity
+            android:name=".AppShortcutsActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:theme="@style/TransparentTheme" />
+
 
         <service
             android:name=".WatchingService"
-            android:enabled="true"/>
+            android:enabled="@bool/use_watching_service" />
         <service
             android:name=".floatui.WatchingAccessibilityService"
             android:description="@string/app_name"
-            android:enabled="true"
+            android:enabled="@bool/use_accessibility_service"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
@@ -50,6 +60,22 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility" />
 
+        </service>
+
+
+        <service
+            android:name=".QuickSettingTileService"
+            android:enabled="@bool/qs_tile_service_availability"
+            android:icon="@drawable/ic_notification"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="true" />
         </service>
 
         <receiver android:name=".floatui.NotificationActionReceiver">

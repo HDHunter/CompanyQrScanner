@@ -7,7 +7,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.0'
-        classpath 'com.huawei.agconnect:agcp:1.1.1.300'
     }
 }
 
@@ -15,13 +14,6 @@ allprojects {
     repositories {
         google()
         jcenter()
-
-        maven {
-            url 'http://developer.huawei.com/repo/'
-        }
-        maven {
-            url "http://nexus.yodo1.com:8081/repository/Yodo1SDK/"
-        }
         maven {
             url 'https://jitpack.io'
         }

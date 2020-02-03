@@ -5,21 +5,25 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.view.accessibility.AccessibilityEvent;
 
+import com.hunter.appinfomonitor.QuickSettingTileService;
+
 /**
  * Created by Wen on 1/14/15.
  */
 public class WatchingAccessibilityService extends AccessibilityService {
-
-
     private static WatchingAccessibilityService sInstance;
+
+    public static WatchingAccessibilityService getInstance() {
+        return sInstance;
+    }
 
     @SuppressLint("NewApi")
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (SPUtils.getState(this)) {
-            TasksWindow.show(this, event.getPackageName() + "\n" + event.getClassName());
-        } else {
-            TasksWindow.dismiss(this);
+        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            if (SPHelper.isShowWindow(this)) {
+                TasksWindow.show(this, event.getPackageName() + "\n" + event.getClassName());
+            }
         }
     }
 
@@ -30,7 +34,10 @@ public class WatchingAccessibilityService extends AccessibilityService {
     @Override
     protected void onServiceConnected() {
         sInstance = this;
-        NotificationActionReceiver.showNotification(this, false);
+        if (SPHelper.isShowWindow(this)) {
+            NotificationActionReceiver.showNotification(this, false);
+        }
+        sendBroadcast(new Intent(QuickSettingTileService.ACTION_UPDATE_TITLE));
         super.onServiceConnected();
     }
 
@@ -39,7 +46,7 @@ public class WatchingAccessibilityService extends AccessibilityService {
         sInstance = null;
         TasksWindow.dismiss(this);
         NotificationActionReceiver.cancelNotification(this);
+        sendBroadcast(new Intent(QuickSettingTileService.ACTION_UPDATE_TITLE));
         return super.onUnbind(intent);
     }
-
 }
