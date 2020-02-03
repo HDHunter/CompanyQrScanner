@@ -32,6 +32,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hunter.appinfomonitor.floatui.NotificationActionReceiver;
 import com.hunter.appinfomonitor.floatui.SPHelper;
 import com.hunter.appinfomonitor.floatui.TasksWindow;
 import com.hunter.appinfomonitor.floatui.WatchingAccessibilityService;
@@ -374,5 +375,35 @@ public class MainActivity extends AppCompatActivity {
 //        if (mNotificationSwitch != null) {
 //            mNotificationSwitch.setChecked(!SPHelper.isNotificationToggleEnabled(this));
 //        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshWindowSwitch();
+        refreshNotificationSwitch();
+        NotificationActionReceiver.cancelNotification(this);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (getIntent().getBooleanExtra(EXTRA_FROM_QS_TILE, false)) {
+//            mWindowSwitch.setChecked(true);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (SPHelper.isShowWindow(this) && !(getResources().getBoolean(R.bool.use_accessibility_service) && WatchingAccessibilityService.getInstance() == null)) {
+            NotificationActionReceiver.showNotification(this, false);
+        }
     }
 }
