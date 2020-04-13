@@ -44,7 +44,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -203,66 +202,44 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // 定义文件内容字符串
-                String content = null;
-
-                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                    File sdCardPath = Environment.getExternalStorageDirectory();
-
-                    try {
-                        File testFile = new File(sdCardPath, ".yodo1ads");
-                        FileInputStream fileInputStream = new FileInputStream(testFile);
-                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                        byte[] buffer = new byte[1024];
-                        int len;
-                        while ((len = fileInputStream.read(buffer)) != -1) {
-                            outputStream.write(buffer, 0, len);
-                        }
-                        content = outputStream.toString();
-                        fileInputStream.close();
-                        outputStream.close();
-                    } catch (FileNotFoundException e) {
-                        Log.d("zzzzz", "yodo1 缺少SD卡权限  读取文件失败");
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1000);
-                        }
-                    } catch (IOException e) {
-                        Log.d("zzzzzz", "yodo1 缺少SD卡权限  读取文件失败");
-                    }
+                boolean isDebugLogEnabled = false;
+                String adsFlag = ".yodo1ads";
+                String str = readFilesFromSDCard(adsFlag);
+                if (!TextUtils.isEmpty(str) && str.contains("openYodo1Log")) {
+                    isDebugLogEnabled = true;
                 }
-                if (!TextUtils.isEmpty(content)) {
-                    Log.e("zzzzzz", content);
+                if (!TextUtils.isEmpty(str)) {
+                    Log.e("文件.yodo1ads内容：", str);
                 }
-
-                if (content == null || !content.contains("openYodo1Log")) {
+                if (str == null || !str.contains("openYodo1Log")) {
+                    Toast.makeText(MainActivity.this,"openYodo1Log不存在，开始创建",Toast.LENGTH_SHORT).show();
                     if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                        File sdCardPath = Environment.getExternalStorageDirectory();
                         try {
-                            File testFile = new File(sdCardPath, ".yodo1ads");
+                            File testFile = new File(Environment.getExternalStorageDirectory(), adsFlag);
                             if (!testFile.exists()) {
                                 testFile.createNewFile();
                             }
                             FileOutputStream fileOutputStream = new FileOutputStream(testFile);
-                            if (content == null) {
-                                content = "openYodo1Log";
+                            if (TextUtils.isEmpty(str)) {
+                                str = "openYodo1Log";
                             } else {
-                                content += "\nopenYodo1Log";
+                                str += "\nopenYodo1Log";
                             }
-                            fileOutputStream.write(content.getBytes());
+                            fileOutputStream.write(str.getBytes());
                             fileOutputStream.flush();
                             fileOutputStream.close();
                         } catch (FileNotFoundException e) {
                             Log.d("zzzzz", "yodo1 缺少SD卡权限  读取文件失败");
                         } catch (Exception e) {
                             Log.d("zzzzzz", "yodo1 缺少SD卡权限  读取文件失败");
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1000);
+                            }
                         }
                     }
                 }
-
-                if (!TextUtils.isEmpty(content)) {
-                    Log.e("zzzzzza", content);
-                }
-                String s = TextUtils.isEmpty(content) ? "全局debugLog标记开启失败" : "全局debugLog标记开启成功";
+                String s = str.contains("openYodo1Log") ? "全局debugLog标记成功" : "全局debugLog标记开启失败";
                 Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
             }
         });
@@ -405,5 +382,55 @@ public class MainActivity extends AppCompatActivity {
         if (SPHelper.isShowWindow(this) && !(getResources().getBoolean(R.bool.use_accessibility_service) && WatchingAccessibilityService.getInstance() == null)) {
             NotificationActionReceiver.showNotification(this, false);
         }
+    }
+
+    /**
+     * 从SD卡上读取文件内容
+     *
+     * @param fileName fileName
+     * @return content
+     */
+    public static String readFilesFromSDCard(String fileName) {
+
+        // 定义文件内容字符串
+        String content = null;
+        // 文件输入流
+        FileInputStream fileInputStream;
+
+        // 判断SD卡是否存在，并且本程序是否拥有SD卡的权限
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+
+            // 获得SD卡的根目录
+            File sdCardPath = Environment.getExternalStorageDirectory();
+            /*
+             * 文件输出操作
+             * */
+            try {
+                File testFile = new File(sdCardPath, fileName);
+                // 打开文件输入流
+                fileInputStream = new FileInputStream(testFile);
+                // 将文件输入流存放在ByteArrayOutputStream
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                // 定义每次读取一个字节
+                byte[] buffer = new byte[1024];
+                // 定义每次读取的字节长度
+                int len;
+                // 读取文件输入流的内容，并存入ByteArrayOutputStream中
+                while ((len = fileInputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, len);
+                }
+                // 将文件输入流数据以字符串的形式存放
+                content = outputStream.toString();
+                // 关闭文件输入流
+                fileInputStream.close();
+                // 关闭ByteArrayOutputStream
+                outputStream.close();
+            } catch (Exception e) {
+                Log.e("yodo1 appInfo", "yodo1 缺少SD卡权限  读取文件失败");
+            }
+        }
+
+        // 返回文件内容
+        return content;
     }
 }
