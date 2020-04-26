@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -201,6 +203,10 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.togglebutton4).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 55);
+                    return;
+                }
                 // 定义文件内容字符串
                 boolean isDebugLogEnabled = false;
                 String adsFlag = ".yodo1ads";
@@ -212,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("文件.yodo1ads内容：", str);
                 }
                 if (str == null || !str.contains("openYodo1Log")) {
-                    Toast.makeText(MainActivity.this,"openYodo1Log不存在，开始创建",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "openYodo1Log不存在，开始创建", Toast.LENGTH_SHORT).show();
                     if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                         try {
                             File testFile = new File(Environment.getExternalStorageDirectory(), adsFlag);
