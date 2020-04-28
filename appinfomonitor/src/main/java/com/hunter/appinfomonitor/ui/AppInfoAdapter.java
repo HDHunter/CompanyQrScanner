@@ -7,9 +7,9 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -90,7 +90,9 @@ public class AppInfoAdapter extends RecyclerView.Adapter {
      * @param s1
      */
     public void setFilter(int filterWay, String s1) {
-        if (srcData.isEmpty()) return;
+        if (srcData.isEmpty()) {
+            return;
+        }
         //user,sytem切换
         if (filterWay == 0) {
             if (filterState == 0) {
@@ -100,7 +102,9 @@ public class AppInfoAdapter extends RecyclerView.Adapter {
             }
         } else if (filterWay == 1) {
             filterState = filterWay;
-            if (s1 == null) s1 = "";
+            if (s1 == null) {
+                s1 = "";
+            }
         }
         data.clear();
         if (filterState == 0) {
@@ -130,7 +134,7 @@ public class AppInfoAdapter extends RecyclerView.Adapter {
         TextView appName;
         TextView packageName;
         TextView versionCode;
-        TextView systemflag;
+        TextView systemflag, sign;
         TextView luacher, delete;
         int position;
 
@@ -145,6 +149,7 @@ public class AppInfoAdapter extends RecyclerView.Adapter {
             applable = view.findViewById(R.id.applable);
             luacher = view.findViewById(R.id.launcher);
             delete = view.findViewById(R.id.delete);
+            sign = view.findViewById(R.id.sign);
 
             luacher.setOnClickListener(this);
             view.setOnClickListener(this);
@@ -154,6 +159,7 @@ public class AppInfoAdapter extends RecyclerView.Adapter {
             systemflag.setOnClickListener(this);
             applable.setOnClickListener(this);
             delete.setOnClickListener(this);
+            sign.setOnClickListener(this);
         }
 
 
@@ -178,6 +184,13 @@ public class AppInfoAdapter extends RecyclerView.Adapter {
                 } catch (Exception e) {
                     Toast.makeText(context, "卸载错误：" + appInfoModel.getPackageName(), Toast.LENGTH_SHORT).show();
                 }
+            } else if (id == R.id.sign) {
+                AppInfoModel appInfoModel = data.get(position);
+                String temp =
+                        SHAUtils.getSHA(SysUtils.getSignature(context, appInfoModel.getPackageName())).replace("-", "");
+                String singn = MD5EncodeUtil.MD5Encode(temp);
+                Toast.makeText(context, singn + "", Toast.LENGTH_LONG).show();
+                Log.e("yodo1 sign", "yodo1_sign:  " + singn);
             } else {
                 AppInfoModel appInfoModel = data.get(position);
                 Intent mIntent = new Intent();

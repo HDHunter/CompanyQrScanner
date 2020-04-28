@@ -29,7 +29,6 @@ import android.util.StringBuilderPrinter;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,10 +55,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String ACTION_STATE_CHANGED = BuildConfig.APPLICATION_ID + ".ACTION_STATE_CHANGED";
     public static final String EXTRA_FROM_QS_TILE = "from_qs_tile";
     private UpdateSwitchReceiver mReceiver;
-    private Button floatBtn;
     private static boolean openfloat = true;
-    private RecyclerView recyclerView;
-    private TextView infoshow;
+    private TextView floatBtn;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

@@ -84,9 +84,24 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/sign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#00f"
+                    android:gravity="right"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:padding="3dp"
+                    android:text="签名"
+                    android:textAllCaps="false"
+                    android:textColor="#fff"
+                    android:textSize="8sp" />
+
+                <TextView
                     android:id="@+id/launcher"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
                     android:background="#3c3c3c"
                     android:gravity="right"
                     android:minWidth="0dp"

@@ -4,7 +4,8 @@ buildscript {
         maven {
             url "http://nexus.yodo1.com:8081/repository/maven-public/"
         }
-        maven { url 'http://developer.huawei.com/repo/' }
+        google()
+        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.0'
@@ -16,14 +17,11 @@ allprojects {
         maven {
             url "http://nexus.yodo1.com:8081/repository/maven-public/"
         }
+        google()
+        jcenter()
+
         maven {
-            url "https://applovin.bintray.com/Android-Adapter-SDKs"
-        }
-        maven {
-            url 'https://dl.bintray.com/ironsource-mobile/android-sdk'
-        }
-        jcenter {
-            url = 'https://dl.bintray.com/swrve-inc/android'
+            url 'https://jitpack.io'
         }
     }
     tasks.withType(Javadoc) {
