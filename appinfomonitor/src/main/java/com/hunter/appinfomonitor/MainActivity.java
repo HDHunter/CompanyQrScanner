@@ -269,6 +269,63 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.togglebutton6).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 55);
+                    return;
+                }
+                // 定义文件内容字符串
+                final String adsFlag = ".yodo1ads";
+                final String adsFlag1 = ".yodo1";
+                String str = readFilesFromSDCard(adsFlag);
+                String str1 = readFilesFromSDCard(adsFlag1);
+                if (!TextUtils.isEmpty(str)) {
+                    Log.e("文件.yodo1ads内容：", str);
+                }
+                if (!TextUtils.isEmpty(str1)) {
+                    Log.e("文件.yodo1内容：", str1);
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle(".yodo1文件内容");
+                try {
+                    builder.setMessage("文件.yodo1ads内容:" + str + "\n文件.yodo1内容:" + str1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                builder.setPositiveButton("全部删除", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                            try {
+                                File testFile = new File(Environment.getExternalStorageDirectory(), adsFlag);
+                                if (testFile.exists()) {
+                                    boolean delete = testFile.delete();
+                                    Log.e("zzzzzzzzz", adsFlag + "    删除" + (delete ? "成功" : "失败"));
+                                }
+                                File testFile1 = new File(Environment.getExternalStorageDirectory(), adsFlag1);
+                                if (testFile1.exists()) {
+                                    boolean delete = testFile1.delete();
+                                    Log.e("zzzzzzzzz", adsFlag1 + "    删除" + (delete ? "成功" : "失败"));
+                                }
+                            } catch (Exception e) {
+                                Log.d("zzzzzz", "yodo1 缺少SD卡权限  读取文件失败");
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1000);
+                                }
+                            }
+                        }
+
+                        dialog.dismiss();
+                    }
+                });
+                builder.create().show();
+            }
+        });
+
         recyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {
