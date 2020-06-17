@@ -347,6 +347,13 @@ public class MainActivity extends AppCompatActivity {
         mReceiver = new UpdateSwitchReceiver();
         registerReceiver(mReceiver, new IntentFilter(ACTION_STATE_CHANGED));
         Toast.makeText(this, "正在读取邮寄中的应用,loading...", Toast.LENGTH_LONG).show();
+
+        findViewById(R.id.gotoyodo1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, Yodo1Activity.class));
+            }
+        });
     }
 
     private void setData() {

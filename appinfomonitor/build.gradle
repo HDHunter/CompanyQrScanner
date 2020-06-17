@@ -27,4 +27,7 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:design:28.0.0'
+
+
+    implementation 'com.loopj.android:android-async-http:1.4.10'
 }
