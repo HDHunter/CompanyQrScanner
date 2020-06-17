@@ -96,8 +96,13 @@ public class AppInfoAdapter extends RecyclerView.Adapter {
         //user,sytem切换
         if (filterWay == 0) {
             if (filterState == 0) {
+                Toast.makeText(context, "所有app列表", Toast.LENGTH_SHORT).show();
                 filterState = -1;
+            } else if (filterState == -1) {
+                Toast.makeText(context, "系统app列表", Toast.LENGTH_SHORT).show();
+                filterState = 2;
             } else {
+                Toast.makeText(context, "用户app列表", Toast.LENGTH_SHORT).show();
                 filterState = 0;
             }
         } else if (filterWay == 1) {
@@ -117,6 +122,13 @@ public class AppInfoAdapter extends RecyclerView.Adapter {
         } else if (filterState == 1) {
             for (AppInfoModel a : srcData) {
                 if (a.getAppName().contains(s1) || a.getPackageName().contains(s1)) {
+                    data.add(a);
+                }
+            }
+        } else if (filterState == 2) {
+            //系统应用
+            for (AppInfoModel a : srcData) {
+                if ((a.getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
                     data.add(a);
                 }
             }

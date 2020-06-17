@@ -19,6 +19,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_FROM_QS_TILE = "from_qs_tile";
     private UpdateSwitchReceiver mReceiver;
     private static boolean openfloat = true;
-    private TextView floatBtn;
+    private TextView info;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,13 +70,17 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = new AppInfoAdapter(this);
         recyclerView.setAdapter(adapter);
-
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, 0);
+        recyclerView.addItemDecoration(dividerItemDecoration);
+        //系统用户app切换
         findViewById(R.id.togglebutton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 adapter.setFilter(0, null);
             }
         });
+        info = findViewById(R.id.infoshow);
+        //输入框
         EditText searc = findViewById(R.id.search);
         searc.addTextChangedListener(new TextWatcher() {
             @Override
@@ -104,7 +109,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        floatBtn = findViewById(R.id.togglebutton2);
+        //浮框界面
+        TextView floatBtn = findViewById(R.id.togglebutton2);
         floatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -191,14 +197,14 @@ public class MainActivity extends AppCompatActivity {
                 openfloat = !openfloat;
             }
         });
-
+        //yodo1 apps
         findViewById(R.id.togglebutton3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 adapter.setFilter(1, "com.yodo1");
             }
         });
-
+        //写日志
         findViewById(R.id.togglebutton4).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -248,6 +254,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
             }
         });
+        //系统信息
         findViewById(R.id.togglebutton5).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -268,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
                 builder.create().show();
             }
         });
-
+        //关日志
         findViewById(R.id.togglebutton6).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -331,7 +338,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 setData();
             }
-        }, 100);
+        }, 0);
         if (getResources().getBoolean(R.bool.use_watching_service)) {
             TasksWindow.show(this, "");
             startService(new Intent(this, WatchingService.class));
@@ -339,9 +346,11 @@ public class MainActivity extends AppCompatActivity {
 
         mReceiver = new UpdateSwitchReceiver();
         registerReceiver(mReceiver, new IntentFilter(ACTION_STATE_CHANGED));
+        Toast.makeText(this, "正在读取邮寄中的应用,loading...", Toast.LENGTH_LONG).show();
     }
 
     private void setData() {
+        int yodo1Count = 0, userAppCount = 0;
         PackageManager pm = getPackageManager();
         List<PackageInfo> installedPackages = pm.getInstalledPackages(0);
         ArrayList<AppInfoModel> infos = new ArrayList<>();
@@ -354,8 +363,15 @@ public class MainActivity extends AppCompatActivity {
             appInfoModel.setApplicationInfo(apI);
             appInfoModel.setAppName(apI.loadLabel(pm).toString());
             infos.add(appInfoModel);
+            if (info.packageName.contains("com.yodo1")) {
+                yodo1Count += 1;
+            }
+            if ((apI.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                userAppCount += 1;
+            }
         }
         adapter.setData(infos);
+        info.setText("共有app:" + infos.size() + "个,用户app:" + userAppCount + "个,yodo1 app共:" + yodo1Count + "个。");
     }
 
     private String updateInfos() {

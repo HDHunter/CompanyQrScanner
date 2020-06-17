@@ -27,7 +27,8 @@
             android:layout_alignParentTop="true"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/imageview"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingLeft="4dp">
 
             <TextView
                 android:id="@+id/applable"
@@ -91,7 +92,7 @@
                     android:gravity="right"
                     android:minWidth="0dp"
                     android:minHeight="0dp"
-                    android:padding="3dp"
+                    android:padding="5dp"
                     android:text="签名"
                     android:textAllCaps="false"
                     android:textColor="#fff"
@@ -101,15 +102,18 @@
                     android:id="@+id/launcher"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
+                    android:layout_marginLeft="8dp"
                     android:background="#3c3c3c"
                     android:gravity="right"
                     android:minWidth="0dp"
                     android:minHeight="0dp"
-                    android:padding="3dp"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="8dp"
+                    android:paddingBottom="5dp"
                     android:text="启动"
                     android:textAllCaps="false"
-                    android:textColor="#000"
+                    android:textColor="#fff"
                     android:textSize="8sp" />
 
                 <TextView
@@ -119,12 +123,17 @@
                     android:layout_marginLeft="3dp"
                     android:background="#c03c3c"
                     android:gravity="right"
-                    android:padding="3dp"
+                    android:padding="5dp"
                     android:text="卸载"
                     android:textAllCaps="false"
-                    android:textColor="#000"
+                    android:textColor="#fff"
                     android:textSize="8sp" />
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#00f" />
 </LinearLayout>
