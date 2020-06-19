@@ -131,7 +131,7 @@ public class Yodo1Activity extends AppCompatActivity {
         loading();
         String url = "http://yodo1fc.yodo1api.com/common-deal";
         RequestParams params = new RequestParams();
-        params.put("p", text.toString());
+        params.put("yid", text.toString());
         ApiRequest.getClient().get(url, params, new TextHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {

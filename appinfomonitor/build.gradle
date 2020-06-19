@@ -8,8 +8,8 @@ android {
         applicationId "com.hunter.appinfomonitor"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 20200606
-        versionName "20200606"
+        versionCode 20200619
+        versionName "20200619"
     }
     buildTypes {
         release {

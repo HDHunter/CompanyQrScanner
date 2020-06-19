@@ -1,11 +1,14 @@
 package com.hunter.appinfomonitor.ui;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -193,6 +196,9 @@ public class AppInfoAdapter extends RecyclerView.Adapter {
                     Uri uri = Uri.fromParts("package", appInfoModel.getPackageName(), null);
                     Intent intent = new Intent(Intent.ACTION_DELETE, uri);
                     context.startActivity(intent);
+                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.REQUEST_DELETE_PACKAGES) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.REQUEST_DELETE_PACKAGES}, 545242);
+                    }
                 } catch (Exception e) {
                     Toast.makeText(context, "卸载错误：" + appInfoModel.getPackageName(), Toast.LENGTH_SHORT).show();
                 }
