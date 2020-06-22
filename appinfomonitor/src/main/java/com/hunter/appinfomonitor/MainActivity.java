@@ -40,6 +40,7 @@ import com.hunter.appinfomonitor.floatui.TasksWindow;
 import com.hunter.appinfomonitor.floatui.WatchingAccessibilityService;
 import com.hunter.appinfomonitor.ui.AppInfoAdapter;
 import com.hunter.appinfomonitor.ui.AppInfoModel;
+import com.hunter.appinfomonitor.yodo1page.Yodo1Activity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

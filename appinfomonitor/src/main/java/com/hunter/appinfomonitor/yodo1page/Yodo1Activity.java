@@ -1,4 +1,4 @@
-package com.hunter.appinfomonitor;
+package com.hunter.appinfomonitor.yodo1page;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -26,16 +26,25 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hunter.appinfomonitor.http.ApiRequest;
-import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.TextHttpResponseHandler;
+import com.hunter.appinfomonitor.AdvertisingIdClient;
+import com.hunter.appinfomonitor.R;
+import com.hunter.appinfomonitor.network.okbiz.GunqiuApi;
+import com.hunter.appinfomonitor.network.okbiz.RxResponse;
+import com.hunter.appinfomonitor.network.okbiz.RxResultHelper;
+import com.hunter.appinfomonitor.network.okbiz.Yodo1SharedPreferences;
+import com.hunter.appinfomonitor.ui.JsonUtils;
+import com.hunter.appinfomonitor.ui.OtaAPi;
+import com.hunter.appinfomonitor.yodo1bean.OTALoginBean;
 
-import cz.msebera.android.httpclient.Header;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 public class Yodo1Activity extends AppCompatActivity {
 
 
-    private TextView tv, tv2, console;
+    private TextView tv, tv2, console, otaname, otapwd;
     private ProgressDialog progressDialog;
     private EditText input;
     private AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
@@ -81,7 +90,8 @@ public class Yodo1Activity extends AppCompatActivity {
         final ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         tv = findViewById(R.id.device_id);
         tv2 = findViewById(R.id.device_model_id);
-
+        otaname = findViewById(R.id.otaname);
+        otapwd = findViewById(R.id.otapwd);
         task.execute();
         tv2.setText(android.os.Build.MODEL);
         console = findViewById(R.id.console);
@@ -125,17 +135,71 @@ public class Yodo1Activity extends AppCompatActivity {
                 return actionId != EditorInfo.IME_ACTION_GO;
             }
         });
+        findViewById(R.id.ota_login).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String sn = otaname.getText().toString();
+                String sp = otapwd.getText().toString();
+                if (TextUtils.isEmpty(sn) || TextUtils.isEmpty(sp)) {
+                    Toast.makeText(Yodo1Activity.this, "format not right.", Toast.LENGTH_SHORT).show();
+                } else {
+                    otaLogin(sn, sp);
+                }
+            }
+        });
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String username = Yodo1SharedPreferences.getString(Yodo1Activity.this, "username");
+                String password = Yodo1SharedPreferences.getString(Yodo1Activity.this, "password");
+                otaname.setText(username);
+                otapwd.setText(password);
+            }
+        });
+    }
+
+    private void otaLogin(String sn, String sp) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("username", sn);
+            jsonObject.put("password", sp);
+            jsonObject.put("isLdap", true);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Yodo1SharedPreferences.put(this, "username", sn);
+        Yodo1SharedPreferences.put(this, "password", sp);
+        GunqiuApi.getInstance().post(OtaAPi.login, jsonObject.toString()).compose(RxResultHelper.<String>handleResult()).subscribe(new RxResponse<String>() {
+            @Override
+            public void onSuccess(String result) {
+                OTALoginBean otaLoginBean = JsonUtils.fromJson(result, OTALoginBean.class);
+                if (otaLoginBean.isSuccess()) {
+                    Yodo1SharedPreferences.put(Yodo1Activity.this, "token", otaLoginBean.getData().getToken());
+                    Toast.makeText(Yodo1Activity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(Yodo1Activity.this, Yodo1OtaApplistActivity.class);
+                    intent.putExtra("logindata", otaLoginBean);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(Yodo1Activity.this, "登录失败,检查网络和账户密码", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                Toast.makeText(Yodo1Activity.this, "登录失败,检查网络和账户密码", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void request(final CharSequence text) {
         loading();
         String url = "http://yodo1fc.yodo1api.com/common-deal";
-        RequestParams params = new RequestParams();
-        params.put("yid", text.toString());
-        ApiRequest.getClient().get(url, params, new TextHttpResponseHandler() {
+        HashMap<String, String> maps = new HashMap<>();
+        maps.put("yid", text.toString());
+        GunqiuApi.getInstance().get(url, maps).compose(RxResultHelper.<String>handleResult()).subscribe(new RxResponse<String>() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                String re = "yid:" + text.toString() + "\nstatusCode:" + statusCode + "\nresponseString:\n" + responseString;
+            public void onSuccess(String result) {
+                String re = "yid:" + text.toString() + "\nresponseString:\n" + result;
                 Log.e("yodo1", re);
                 console.setText(re);
                 console.setTextColor(Color.BLACK);
@@ -144,15 +208,14 @@ public class Yodo1Activity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                String re = "yid:" + text.toString() + "\nstatusCode:" + statusCode + "\nresponseString:\n" + responseString;
+            public void onFailure(Throwable e) {
+                String re = "yid:" + text.toString() + "\nresponseString:\n" + e.getMessage();
                 Log.e("yodo1", re);
                 console.setText(re);
                 console.setTextColor(Color.RED);
                 hideLoading();
                 Toast.makeText(Yodo1Activity.this, "请求失败。", Toast.LENGTH_SHORT).show();
             }
-
         });
     }
 

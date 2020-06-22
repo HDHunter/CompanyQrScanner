@@ -5,14 +5,64 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="8dp"
     tools:context=".MainActivity">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ota"
+        app:srcCompat="@drawable/ota" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/otaname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="OTA loginName"
+                android:textColor="#808080"
+                android:textSize="14sp" />
+
+
+            <EditText
+                android:id="@+id/otapwd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:hint="OTA loginPassword"
+                android:textColor="#000000"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/ota_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="login"
+            android:textAllCaps="false" />
+
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
         android:src="@drawable/mas_logo"
         app:srcCompat="@drawable/mas_logo" />
 
@@ -22,7 +72,7 @@
         android:layout_height="wrap_content"
         android:text="Device Model"
         android:textColor="#808080"
-        android:textSize="20sp" />
+        android:textSize="14sp" />
 
 
     <TextView
@@ -32,7 +82,7 @@
         android:gravity="center_vertical"
         android:text="Hello World!"
         android:textColor="#000000"
-        android:textSize="20sp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/device_name"
@@ -40,7 +90,7 @@
         android:layout_height="wrap_content"
         android:text="Device ID(googleAdId/IMEI)"
         android:textColor="#808080"
-        android:textSize="20sp" />
+        android:textSize="14sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -70,7 +120,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="90dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:scaleType="fitCenter"
         android:src="@drawable/opp"
         app:srcCompat="@drawable/opp" />
@@ -81,7 +131,7 @@
         android:layout_height="wrap_content"
         android:text="删除实名信息:"
         android:textColor="#808080"
-        android:textSize="20sp" />
+        android:textSize="14sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -99,7 +149,7 @@
             android:inputType="text"
             android:text=""
             android:textColor="#000000"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/request"

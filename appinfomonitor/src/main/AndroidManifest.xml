@@ -51,7 +51,8 @@
             android:exported="false"
             android:theme="@style/TransparentTheme" />
 
-        <activity android:name=".Yodo1Activity" />
+        <activity android:name=".yodo1page.Yodo1Activity" />
+        <activity android:name=".yodo1page.Yodo1OtaApplistActivity" />
 
 
         <service
