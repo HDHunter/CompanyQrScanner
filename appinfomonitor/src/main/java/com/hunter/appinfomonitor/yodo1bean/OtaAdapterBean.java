@@ -17,6 +17,7 @@ public class OtaAdapterBean implements Serializable {
             bn.setName(bb.getName());
             bn.setTeamid(bb.get_id());
             bn.setRole(bb.getRole());
+            bn.setMembers(bb.getMembers());
             teams.add(bn);
         }
     }
@@ -26,6 +27,15 @@ public class OtaAdapterBean implements Serializable {
         private String teamid;
         private String name;
         private String role;
+        private List<String> members;
+
+        public List<String> getMembers() {
+            return members;
+        }
+
+        public void setMembers(List<String> members) {
+            this.members = members;
+        }
 
         public String getTeamid() {
             return teamid;

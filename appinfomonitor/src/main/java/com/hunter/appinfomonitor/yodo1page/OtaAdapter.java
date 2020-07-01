@@ -1,20 +1,27 @@
 package com.hunter.appinfomonitor.yodo1page;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hunter.appinfomonitor.R;
 import com.hunter.appinfomonitor.yodo1bean.OtaAdapterBean;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OtaAdapter extends BaseExpandableListAdapter {
 
-    private final Yodo1OtaApplistActivity mActivity;
+    private final Activity mActivity;
     private OtaAdapterBean mList;
 
 
-    public OtaAdapter(Yodo1OtaApplistActivity yodo1OtaApplistActivity, OtaAdapterBean loginBean) {
+    public OtaAdapter(Activity yodo1OtaApplistActivity, OtaAdapterBean loginBean) {
         this.mActivity = yodo1OtaApplistActivity;
         mList = loginBean;
     }
@@ -61,11 +68,42 @@ public class OtaAdapter extends BaseExpandableListAdapter {
             TextView name = convertView.findViewById(R.id.teamname);
             TeamBean tb = new TeamBean();
             tb.name = name;
+            tb.role = convertView.findViewById(R.id.teamnamerole);
+            tb.count = convertView.findViewById(R.id.teammemebercount);
             convertView.setTag(tb);
         }
         TeamBean vh = (TeamBean) convertView.getTag();
         OtaAdapterBean.TeamsGroupBean group = getGroup(groupPosition);
         vh.name.setText(group.getName());
+        vh.role.setText(group.getRole());
+        final List<String> members = group.getMembers();
+        if (members == null || members.size() <= 0) {
+            vh.count.setVisibility(View.GONE);
+        } else {
+            vh.count.setVisibility(View.VISIBLE);
+            vh.count.setText("共有:" + members.size() + "人");
+            vh.count.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ArrayList<String> lists = new ArrayList<>();
+                    for (String l : members) {
+                        lists.add(l);
+                    }
+                    Intent intent = new Intent(mActivity, OtaListActivity.class);
+                    intent.putStringArrayListExtra("stringlist", lists);
+                    mActivity.startActivity(intent);
+                }
+            });
+        }
+        if (mActivity instanceof Yodo1OtaApplistActivity) {
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mActivity, "goto 下载列表页面", Toast.LENGTH_SHORT).show();
+
+                }
+            });
+        }
         return convertView;
     }
 
@@ -81,5 +119,7 @@ public class OtaAdapter extends BaseExpandableListAdapter {
 
     public class TeamBean {
         TextView name;
+        TextView role;
+        Button count;
     }
 }

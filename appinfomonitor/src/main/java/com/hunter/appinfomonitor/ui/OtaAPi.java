@@ -6,5 +6,7 @@ public interface OtaAPi {
 
 
     String login = base + "/api/user/login";
+    String teamList = base + "/api/user/teams";
+    String membersList = base + "/api/team/{}/members";
 
 }

@@ -225,15 +225,19 @@ public class OTALoginBean implements Serializable {
         }
 
         public static class TeamsBean implements Serializable {
-            /**
-             * _id : 5e672afeed939f001845ba46
-             * name : 我的团队
-             * role : owner
-             */
 
             private String _id;
             private String name;
             private String role;
+            private List<String> members;
+
+            public List<String> getMembers() {
+                return members;
+            }
+
+            public void setMembers(List<String> members) {
+                this.members = members;
+            }
 
             public String get_id() {
                 return _id;

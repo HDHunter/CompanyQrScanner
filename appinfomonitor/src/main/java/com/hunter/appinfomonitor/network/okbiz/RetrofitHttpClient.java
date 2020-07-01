@@ -62,7 +62,7 @@ public class RetrofitHttpClient {
             HttpLoggingInterceptor log = new HttpLoggingInterceptor(logger);
             builder.addNetworkInterceptor(log.setLevel(HttpLoggingInterceptor.Level.BODY));
         }
-//        builder.addInterceptor(new AllInterceptor());
+        builder.addInterceptor(new AllInterceptor());
         return builder;
     }
 
