@@ -1,5 +1,6 @@
 package com.hunter.appinfomonitor.yodo1page;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hunter.appinfomonitor.LogUtils;
 import com.hunter.appinfomonitor.R;
 import com.hunter.appinfomonitor.network.okbiz.GunqiuApi;
 import com.hunter.appinfomonitor.network.okbiz.RxResponse;
@@ -18,6 +20,7 @@ import com.hunter.appinfomonitor.ui.JsonUtils;
 import com.hunter.appinfomonitor.ui.OtaAPi;
 import com.hunter.appinfomonitor.yodo1bean.OTALoginBean;
 import com.hunter.appinfomonitor.yodo1bean.OtaAdapterBean;
+import com.hunter.appinfomonitor.yodo1bean.OtaAllAppListBean;
 import com.hunter.appinfomonitor.yodo1bean.OtaMemberListBean;
 
 import java.io.Serializable;
@@ -33,6 +36,7 @@ public class Yodo1OtaApplistActivity extends AppCompatActivity implements Adapte
     TextView content;
     ExpandableListView listView;
     OtaAdapter otaAdapter;
+    private List<OtaAllAppListBean.DataBean.TeamsBean> allAppList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,7 +62,7 @@ public class Yodo1OtaApplistActivity extends AppCompatActivity implements Adapte
 
     private void getTeamsInfos() {
         final List<OTALoginBean.DataBean.TeamsBean> teams = loginBean.getData().getTeams();
-        int timeDuration = 100;//ms
+        int timeDuration = 0;//ms
         for (final OTALoginBean.DataBean.TeamsBean team : teams) {
             listView.postDelayed(new Runnable() {
                 @Override
@@ -89,19 +93,44 @@ public class Yodo1OtaApplistActivity extends AppCompatActivity implements Adapte
                     });
                 }
             }, timeDuration);
-            timeDuration += 200;
+            timeDuration += 150;
         }
         listView.postDelayed(new Runnable() {
             @Override
             public void run() {
                 otaAdapter = new OtaAdapter(Yodo1OtaApplistActivity.this, new OtaAdapterBean(loginBean));
                 listView.setAdapter(otaAdapter);
+                getAppList();
             }
         }, timeDuration + 100);
     }
 
+    private void getAppList() {
+        GunqiuApi.getInstance().get(OtaAPi.allAppList).compose(RxResultHelper.<String>handleResult()).subscribe(new RxResponse<String>() {
+            @Override
+            public void onSuccess(String result) {
+                OtaAllAppListBean otaLoginBean = JsonUtils.fromJson(result, OtaAllAppListBean.class);
+                if (otaLoginBean.isSuccess()) {
+                    allAppList = otaLoginBean.getData().getTeams();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                Toast.makeText(Yodo1OtaApplistActivity.this, "appList请求失败", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(this, "click:position:" + position + " id:" + id, Toast.LENGTH_SHORT).show();
+        LogUtils.e("onItemClick", "click:position:" + position + " id:" + id);
+        if (allAppList != null && position < allAppList.size()) {
+            Intent intent = new Intent(this, OtaAppListActivity.class);
+            intent.putExtra("applist", allAppList.get(position));
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "数据未下载，或者有异常，请退出重试。", Toast.LENGTH_SHORT).show();
+        }
     }
 }

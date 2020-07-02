@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hunter.appinfomonitor.R;
 import com.hunter.appinfomonitor.yodo1bean.OtaAdapterBean;
@@ -62,7 +61,7 @@ public class OtaAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+    public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = View.inflate(mActivity, R.layout.otaadapter_groupview, null);
             TextView name = convertView.findViewById(R.id.teamname);
@@ -99,8 +98,7 @@ public class OtaAdapter extends BaseExpandableListAdapter {
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(mActivity, "goto 下载列表页面", Toast.LENGTH_SHORT).show();
-
+                    ((Yodo1OtaApplistActivity) mActivity).onItemClick(null, null, groupPosition, groupPosition);
                 }
             });
         }

@@ -54,6 +54,7 @@
         <activity android:name=".yodo1page.Yodo1Activity" />
         <activity android:name=".yodo1page.Yodo1OtaApplistActivity" />
         <activity android:name=".yodo1page.OtaListActivity" />
+        <activity android:name=".yodo1page.OtaAppListActivity" />
 
 
         <service
