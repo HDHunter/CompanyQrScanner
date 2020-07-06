@@ -40,6 +40,7 @@ import com.hunter.appinfomonitor.floatui.TasksWindow;
 import com.hunter.appinfomonitor.floatui.WatchingAccessibilityService;
 import com.hunter.appinfomonitor.ui.AppInfoAdapter;
 import com.hunter.appinfomonitor.ui.AppInfoModel;
+import com.hunter.appinfomonitor.yodo1page.DownloadServerice;
 import com.hunter.appinfomonitor.yodo1page.Yodo1Activity;
 
 import java.io.ByteArrayOutputStream;
@@ -355,6 +356,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, Yodo1Activity.class));
             }
         });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(new Intent(this, DownloadServerice.class));
+        } else {
+            startService(new Intent(this, DownloadServerice.class));
+        }
     }
 
     private void setData() {

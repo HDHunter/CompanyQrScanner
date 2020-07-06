@@ -1,6 +1,7 @@
 package com.hunter.appinfomonitor.yodo1page;
 
 import android.graphics.Color;
+import android.text.format.Formatter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -92,15 +93,18 @@ public class OtaAppListAdapter extends BaseExpandableListAdapter {
             vh.packageName.setTextColor(Color.BLACK);
             vh.versionInfo = convertView.findViewById(R.id.item_version);
             vh.downloadCount = convertView.findViewById(R.id.item_download);
+            vh.download = convertView.findViewById(R.id.item_download_btn);
             convertView.setTag(vh);
         } else {
             vh = (VH) convertView.getTag();
         }
         OtaAllAppListBean.DataBean.TeamsBean.AppsBean.VersionsBean child = getChild(groupPosition, childPosition);
-        vh.appName.setText("版本名:" + child.getVersionStr() + "    版本号:" + child.getVersionCode());
-        vh.packageName.setText("时间:   " + child.getUploadAt());
-        vh.downloadCount.setText("上传者: " + child.getUploader());
+        vh.appName.setText("版本名:" + child.getVersionStr() + "  版本号:" + child.getVersionCode() + "  上传者:" + child.getUploader());
+        vh.packageName.setText("下载次数:" + child.getDownloadCount() + " 时间:" + child.getUploadAt());
+        int i = child.getSize() + child.getObbSize();
+        vh.downloadCount.setText("大小:" + Formatter.formatFileSize(mActivity, i));
         vh.versionInfo.setText("备注:   " + child.getChangelog());
+        vh.download.setData(child);
 //        vh.packageName.setText(group.getBundleId());
 //        vh.downloadCount.setText("下载量:" + group.getTotalDownloadCount() + " 今日下载:" + group.getTodayDownloadCount().getCount());
 //        vh.versionInfo.setText("当前版本号:" + group.getCurrentVersion() + "  创建者:" + group.getCreator());
@@ -115,5 +119,6 @@ public class OtaAppListAdapter extends BaseExpandableListAdapter {
     class VH {
         ImageView icon;
         TextView appName, versionInfo, packageName, downloadCount;
+        DownloadButton download;
     }
 }

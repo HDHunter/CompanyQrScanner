@@ -69,4 +69,35 @@ public class Yodo1SharedPreferences {
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
         return sp.getLong(key, 0);
     }
+
+
+    /**
+     * ota downloader.
+     */
+    public static boolean hasDownloadTask(Context context, int downloadTaskId) {
+        String fetchTask = getString(context, "FetchTask");
+        if (fetchTask == null) {
+            return false;
+        }
+        String id = String.valueOf(downloadTaskId);
+        return fetchTask.contains(id);
+    }
+
+    public static void addDownloadTask(Context context, int downloadTaskId) {
+        String fetchTask = getString(context, "FetchTask");
+        if (fetchTask == null) {
+            put(context, "FetchTask", String.valueOf(downloadTaskId));
+        } else {
+            put(context, "FetchTask", fetchTask + downloadTaskId);
+        }
+    }
+
+    public static void removeDownloadTask(Context context, int downloadTaskId) {
+        String fetchTask = getString(context, "FetchTask");
+        if (fetchTask != null) {
+            String id = String.valueOf(downloadTaskId);
+            fetchTask = fetchTask.replace(id, "");
+            put(context, "FetchTask", fetchTask);
+        }
+    }
 }
