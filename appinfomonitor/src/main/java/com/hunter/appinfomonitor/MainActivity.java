@@ -40,6 +40,7 @@ import com.hunter.appinfomonitor.floatui.TasksWindow;
 import com.hunter.appinfomonitor.floatui.WatchingAccessibilityService;
 import com.hunter.appinfomonitor.ui.AppInfoAdapter;
 import com.hunter.appinfomonitor.ui.AppInfoModel;
+import com.hunter.appinfomonitor.ui.AppManager;
 import com.hunter.appinfomonitor.yodo1page.DownloadServerice;
 import com.hunter.appinfomonitor.yodo1page.Yodo1Activity;
 
@@ -65,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainactivity);
+
+        AppManager.getAppManager().addActivity(this);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         LinearLayoutManager lm = new LinearLayoutManager(this);
@@ -466,6 +469,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        AppManager.getAppManager().removeActivity(this);
         unregisterReceiver(mReceiver);
     }
 

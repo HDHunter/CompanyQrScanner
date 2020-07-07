@@ -11,4 +11,5 @@ public interface OtaAPi {
 
     String allAppList = base + "/api/apps/all";
 
+    String createCount = base + "/api/count/{appid}/{versionId}";
 }

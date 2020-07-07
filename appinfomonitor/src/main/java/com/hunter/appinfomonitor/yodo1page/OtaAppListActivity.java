@@ -7,6 +7,7 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import com.hunter.appinfomonitor.R;
+import com.hunter.appinfomonitor.ui.AppManager;
 import com.hunter.appinfomonitor.yodo1bean.OtaAllAppListBean;
 
 import java.io.Serializable;
@@ -33,11 +34,19 @@ public class OtaAppListActivity extends Activity {
         } else {
             finish();
         }
+
+        AppManager.getAppManager().addActivity(this);
     }
 
     private void setData() {
         content.setText("组织名称：" + teamsData.getName() + "\n" + "角色:" + teamsData.getRole() + "  拥有:" + teamsData.getApps().size() + "个应用。");
         OtaAppListAdapter adapter = new OtaAppListAdapter(this, teamsData);
         listView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AppManager.getAppManager().removeActivity(this);
     }
 }

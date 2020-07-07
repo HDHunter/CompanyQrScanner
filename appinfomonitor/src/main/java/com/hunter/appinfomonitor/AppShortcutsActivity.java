@@ -12,6 +12,7 @@ import com.hunter.appinfomonitor.floatui.NotificationActionReceiver;
 import com.hunter.appinfomonitor.floatui.SPHelper;
 import com.hunter.appinfomonitor.floatui.TasksWindow;
 import com.hunter.appinfomonitor.floatui.WatchingAccessibilityService;
+import com.hunter.appinfomonitor.ui.AppManager;
 
 /**
  * @author HunterZhang
@@ -41,5 +42,13 @@ public class AppShortcutsActivity extends Activity {
         }
         sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
         finish();
+
+        AppManager.getAppManager().addActivity(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AppManager.getAppManager().removeActivity(this);
     }
 }

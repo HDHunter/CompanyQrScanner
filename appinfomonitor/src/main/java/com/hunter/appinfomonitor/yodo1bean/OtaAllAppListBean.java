@@ -374,15 +374,19 @@ public class OtaAllAppListBean implements Serializable {
                     private String delTime;
                     private String appId;
                     private String downloadUrl;
-                    private int size;
+                    private long size;
                     private String packageMD5;
                     private String packageTag;
                     private String installUrl;
                     private String publicInstallUrl;
+                    /**
+                     * 复用无法理解的字段，存储Fetch lib的下载id.zjq
+                     */
                     private int __v;
+                    private int __vobb;
                     private String obbDownloadUrl;
                     private String obbMD5;
-                    private int obbSize;
+                    private long obbSize;
                     private String publicObbDownloadUrl;
                     private String changelog;
                     private String package_md5;
@@ -539,7 +543,7 @@ public class OtaAllAppListBean implements Serializable {
                         this.downloadUrl = downloadUrl;
                     }
 
-                    public int getSize() {
+                    public long getSize() {
                         return size;
                     }
 
@@ -583,6 +587,14 @@ public class OtaAllAppListBean implements Serializable {
                         return __v;
                     }
 
+                    public int get__vobb() {
+                        return __vobb;
+                    }
+
+                    public void set__vobb(int __vobb) {
+                        this.__vobb = __vobb;
+                    }
+
                     public void set__v(int __v) {
                         this.__v = __v;
                     }
@@ -603,7 +615,7 @@ public class OtaAllAppListBean implements Serializable {
                         this.obbMD5 = obbMD5;
                     }
 
-                    public int getObbSize() {
+                    public long getObbSize() {
                         return obbSize;
                     }
 

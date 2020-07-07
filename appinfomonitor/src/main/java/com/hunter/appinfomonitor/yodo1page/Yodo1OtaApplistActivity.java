@@ -16,6 +16,7 @@ import com.hunter.appinfomonitor.R;
 import com.hunter.appinfomonitor.network.okbiz.GunqiuApi;
 import com.hunter.appinfomonitor.network.okbiz.RxResponse;
 import com.hunter.appinfomonitor.network.okbiz.RxResultHelper;
+import com.hunter.appinfomonitor.ui.AppManager;
 import com.hunter.appinfomonitor.ui.JsonUtils;
 import com.hunter.appinfomonitor.ui.OtaAPi;
 import com.hunter.appinfomonitor.yodo1bean.OTALoginBean;
@@ -58,6 +59,8 @@ public class Yodo1OtaApplistActivity extends AppCompatActivity implements Adapte
         listView.setOnItemClickListener(this);
 
         getTeamsInfos();
+
+        AppManager.getAppManager().addActivity(this);
     }
 
     private void getTeamsInfos() {
@@ -120,6 +123,12 @@ public class Yodo1OtaApplistActivity extends AppCompatActivity implements Adapte
                 Toast.makeText(Yodo1OtaApplistActivity.this, "appList请求失败", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AppManager.getAppManager().removeActivity(this);
     }
 
     @Override

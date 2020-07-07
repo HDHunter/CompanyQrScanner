@@ -32,6 +32,7 @@ import com.hunter.appinfomonitor.network.okbiz.GunqiuApi;
 import com.hunter.appinfomonitor.network.okbiz.RxResponse;
 import com.hunter.appinfomonitor.network.okbiz.RxResultHelper;
 import com.hunter.appinfomonitor.network.okbiz.Yodo1SharedPreferences;
+import com.hunter.appinfomonitor.ui.AppManager;
 import com.hunter.appinfomonitor.ui.JsonUtils;
 import com.hunter.appinfomonitor.ui.OtaAPi;
 import com.hunter.appinfomonitor.yodo1bean.OTALoginBean;
@@ -156,6 +157,7 @@ public class Yodo1Activity extends AppCompatActivity {
                 otapwd.setText(password);
             }
         });
+        AppManager.getAppManager().addActivity(this);
     }
 
     private void otaLogin(String sn, String sp) {
@@ -239,6 +241,7 @@ public class Yodo1Activity extends AppCompatActivity {
         if (task != null && !task.isCancelled()) {
             task.cancel(true);
         }
+        AppManager.getAppManager().removeActivity(this);
         task = null;
     }
 

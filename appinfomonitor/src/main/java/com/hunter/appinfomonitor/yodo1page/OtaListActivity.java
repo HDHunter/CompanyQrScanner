@@ -7,6 +7,7 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import com.hunter.appinfomonitor.R;
+import com.hunter.appinfomonitor.ui.AppManager;
 import com.hunter.appinfomonitor.yodo1bean.OTALoginBean;
 import com.hunter.appinfomonitor.yodo1bean.OtaAdapterBean;
 
@@ -47,5 +48,13 @@ public class OtaListActivity extends Activity {
         OtaAdapter otaAdapter = new OtaAdapter(OtaListActivity.this, new OtaAdapterBean(loginBean));
         listView.setAdapter(otaAdapter);
         listView.setOnItemClickListener(null);
+        AppManager.getAppManager().addActivity(this);
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AppManager.getAppManager().removeActivity(this);
     }
 }
