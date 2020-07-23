@@ -30,12 +30,13 @@
             android:id="@+id/togglebutton2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="#60303030"
             android:minWidth="0dp"
             android:minHeight="0dp"
-            android:padding="4dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:text="浮框界面"
             android:textAllCaps="false"
-            android:textColor="#000"
             android:textSize="10sp" />
 
         <EditText
@@ -43,11 +44,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="#303c3c3c"
+            android:background="@android:color/white"
             android:hint="搜索应用,输入包名or应用名"
             android:imeOptions="actionSearch"
             android:lines="1"
-            android:padding="4dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:singleLine="true"
             android:textSize="10sp" />
 
@@ -131,10 +133,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipte_refreshlayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </android.support.v4.widget.SwipeRefreshLayout>
 
         <View
             android:id="@+id/gotoyodo1"

@@ -18,6 +18,7 @@ import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         AppManager.getAppManager().addActivity(this);
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        final RecyclerView recyclerView = findViewById(R.id.recyclerview);
         LinearLayoutManager lm = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(lm);
 
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String s1 = s.toString();
-                adapter.setFilter(1, s1);
+                adapter.setFilter(1, new String[]{s1});
             }
         });
         searc.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     String s1 = v.getText().toString();
-                    adapter.setFilter(1, s1);
+                    adapter.setFilter(1, new String[]{s1});
                     return true;
                 } else {
                     return false;
@@ -206,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.togglebutton3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                adapter.setFilter(1, "com.yodo1");
+                adapter.setFilter(1, new String[]{"yodo1", "steppypants"});
             }
         });
         //写日志
@@ -365,6 +366,20 @@ public class MainActivity extends AppCompatActivity {
         } else {
             startService(new Intent(this, DownloadServerice.class));
         }
+
+        final SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipte_refreshlayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                recyclerView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 2000);
+                setData();
+            }
+        });
     }
 
     private void setData() {
@@ -388,6 +403,10 @@ public class MainActivity extends AppCompatActivity {
                 userAppCount += 1;
             }
         }
+        //空白
+        AppInfoModel appInfoModel = new AppInfoModel();
+        infos.add(appInfoModel);
+
         adapter.setData(infos);
         info.setText("共有app:" + infos.size() + "个,用户app:" + userAppCount + "个,yodo1 app共:" + yodo1Count + "个。");
     }

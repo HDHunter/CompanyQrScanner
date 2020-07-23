@@ -62,14 +62,19 @@ public class AppInfoAdapter extends RecyclerView.Adapter {
             vh.versionCode.setText("");
 
             ApplicationInfo app = appInfoModel.getApplicationInfo();
-            vh.icon.setImageDrawable(app.loadIcon(pm));
-            vh.applable.setText("应用名：" + appInfoModel.getAppName());
-            if ((app.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-                vh.systemflag.setText("系统应用");
-                vh.systemflag.setTextColor(Color.GRAY);
+            if (app != null) {
+                vh.view.setVisibility(View.VISIBLE);
+                vh.icon.setImageDrawable(app.loadIcon(pm));
+                vh.applable.setText("应用名：" + appInfoModel.getAppName());
+                if ((app.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                    vh.systemflag.setText("系统应用");
+                    vh.systemflag.setTextColor(Color.GRAY);
+                } else {
+                    vh.systemflag.setText("用户应用");
+                    vh.systemflag.setTextColor(Color.BLUE);
+                }
             } else {
-                vh.systemflag.setText("用户应用");
-                vh.systemflag.setTextColor(Color.BLUE);
+                vh.view.setVisibility(View.INVISIBLE);
             }
             vh.position = position;
         }
@@ -92,7 +97,7 @@ public class AppInfoAdapter extends RecyclerView.Adapter {
      * @param filterWay 切换方式
      * @param s1
      */
-    public void setFilter(int filterWay, String s1) {
+    public void setFilter(int filterWay, String[] s1) {
         if (srcData.isEmpty()) {
             return;
         }
@@ -111,27 +116,29 @@ public class AppInfoAdapter extends RecyclerView.Adapter {
         } else if (filterWay == 1) {
             filterState = filterWay;
             if (s1 == null) {
-                s1 = "";
+                s1 = new String[0];
             }
         }
         data.clear();
         if (filterState == 0) {
             //用户应用
             for (AppInfoModel a : srcData) {
-                if ((a.getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                if (a.getApplicationInfo() != null && (a.getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
                     data.add(a);
                 }
             }
         } else if (filterState == 1) {
             for (AppInfoModel a : srcData) {
-                if (a.getAppName().contains(s1) || a.getPackageName().contains(s1)) {
-                    data.add(a);
+                for (String ss : s1) {
+                    if (a.getAppName() != null && (a.getAppName().contains(ss) || a.getPackageName().contains(ss)) && !data.contains(a)) {
+                        data.add(a);
+                    }
                 }
             }
         } else if (filterState == 2) {
             //系统应用
             for (AppInfoModel a : srcData) {
-                if ((a.getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                if (a.getApplicationInfo() != null && (a.getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
                     data.add(a);
                 }
             }
@@ -208,7 +215,9 @@ public class AppInfoAdapter extends RecyclerView.Adapter {
                         SHAUtils.getSHA(SysUtils.getSignature(context, appInfoModel.getPackageName())).replace("-", "");
                 String singn = MD5EncodeUtil.MD5Encode(temp);
                 Toast.makeText(context, singn + "", Toast.LENGTH_LONG).show();
+                Log.e("yodo1", "******************************************************************************");
                 Log.e("yodo1 sign", "yodo1_sign:  " + singn);
+                Log.e("yodo1", "******************************************************************************");
             } else {
                 AppInfoModel appInfoModel = data.get(position);
                 Intent mIntent = new Intent();
