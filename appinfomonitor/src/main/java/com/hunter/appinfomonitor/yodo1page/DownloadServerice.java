@@ -75,8 +75,38 @@ public class DownloadServerice extends Service implements FetchListener {
                 return;
             }
         }
-
+        LogUtils.e("uri", "uri:" + fileUri.toString());
         Intent install = new Intent(Intent.ACTION_VIEW);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            install.setDataAndType(fileUri, "application/vnd.android.package-archive");
+        } else {
+            Uri apkUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", new File(fileUri.getPath()));
+            install.setDataAndType(apkUri, "application/vnd.android.package-archive");
+        }
+        install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        context.startActivity(install);
+    }
+
+    public static void installApp(Context context, OtaAllAppListBean.DataBean.TeamsBean.AppsBean.VersionsBean data) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //先获取是否有安装未知来源应用的权限
+            boolean haveInstallPermission = AppManager.getAppManager().currentActivity().getPackageManager().canRequestPackageInstalls();
+            if (!haveInstallPermission) {//没有权限
+                Uri packageURI = Uri.parse("package:" + context.getPackageName());
+                Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, packageURI);
+                AppManager.getAppManager().currentActivity().startActivityForResult(intent, 11111);
+                return;
+            }
+        }
+
+        Uri uri = Uri.parse(data.getDownloadUrl());
+        File sdCardPath = new File(Environment.getExternalStorageDirectory(), "yodo1");
+        File testFile = new File(sdCardPath, data.get_id() + uri.getLastPathSegment());
+        Request request = new Request(data.getDownloadUrl(), testFile.getAbsolutePath());
+        Uri fileUri = request.getFileUri();
+        Intent install = new Intent(Intent.ACTION_VIEW);
+        LogUtils.e("uri", "uri:" + fileUri.toString());
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             install.setDataAndType(fileUri, "application/vnd.android.package-archive");
         } else {
@@ -165,7 +195,7 @@ public class DownloadServerice extends Service implements FetchListener {
         } else {
             Uri uri = Uri.parse(data.getDownloadUrl());
             File sdCardPath = new File(Environment.getExternalStorageDirectory(), "yodo1");
-            File testFile = new File(sdCardPath, uri.getLastPathSegment());
+            File testFile = new File(sdCardPath, data.get_id() + uri.getLastPathSegment());
             int downloadid = new Request(data.getDownloadUrl(), testFile.getAbsolutePath()).getId();
             data.set__v(downloadid);
             if (getDownloadingList().get(downloadid) != null) {
@@ -191,7 +221,7 @@ public class DownloadServerice extends Service implements FetchListener {
         } else {
             Uri uri = Uri.parse(data.getObbDownloadUrl());
             File sdCardPath = new File(Environment.getExternalStorageDirectory(), "yodo1");
-            File testFile = new File(sdCardPath, uri.getLastPathSegment());
+            File testFile = new File(sdCardPath, data.get_id() + uri.getLastPathSegment());
             int downloadid = new Request(data.getDownloadUrl(), testFile.getAbsolutePath()).getId();
             data.set__vobb(downloadid);
             if (getDownloadingList().get(downloadid) != null) {

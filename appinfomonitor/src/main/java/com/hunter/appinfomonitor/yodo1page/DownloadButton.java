@@ -11,13 +11,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.hunter.appinfomonitor.LogUtils;
 import com.hunter.appinfomonitor.R;
@@ -78,17 +78,22 @@ public class DownloadButton extends FrameLayout implements View.OnClickListener,
     }
 
     private void refreshButon() {
-        progressBar.setMax(100);
+        if (!TextUtils.isEmpty(mData.getObbDownloadUrl())) {
+            progressBar.setMax(200);
+        } else {
+            progressBar.setMax(100);
+        }
         button.setTag(null);
         DownloadServerice.DownLoaderStatus appFileStatus = DownloadServerice.getAppFileStatus(mData);
-        if (appFileStatus == DownloadServerice.DownLoaderStatus.NONE) {
+        DownloadServerice.DownLoaderStatus appobbFileStatus = DownloadServerice.getObbFileStatus(mData);
+        if (appFileStatus == DownloadServerice.DownLoaderStatus.NONE || appobbFileStatus == DownloadServerice.DownLoaderStatus.NONE) {
             button.setText("下载");
             button.setTextColor(Color.BLACK);
             button.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
             button.setOnClickListener(this);
             progressBar.setOnClickListener(this);
-        } else if (appFileStatus == DownloadServerice.DownLoaderStatus.UNCOMPLETE) {
+        } else if (appFileStatus == DownloadServerice.DownLoaderStatus.UNCOMPLETE || appobbFileStatus == DownloadServerice.DownLoaderStatus.UNCOMPLETE) {
             button.setText("未完成");
             button.setTextColor(Color.BLACK);
             button.setVisibility(View.VISIBLE);
@@ -102,7 +107,7 @@ public class DownloadButton extends FrameLayout implements View.OnClickListener,
             progressBar.setVisibility(View.GONE);
             button.setOnClickListener(this);
             progressBar.setOnClickListener(this);
-        } else if (appFileStatus == DownloadServerice.DownLoaderStatus.DOWNLODING) {
+        } else if (appFileStatus == DownloadServerice.DownLoaderStatus.DOWNLODING || appobbFileStatus == DownloadServerice.DownLoaderStatus.DOWNLODING) {
             button.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
             progressBar.setProgress(DownloadServerice.getDownloadingList().get(mData.get__v()));
@@ -135,22 +140,23 @@ public class DownloadButton extends FrameLayout implements View.OnClickListener,
 
     @Override
     public void onClick(View v) {
+        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions((Activity) mContext, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 55);
+            return;
+        }
         DownloadServerice.DownLoaderStatus appFileStatus = DownloadServerice.getAppFileStatus(mData);
-        if (appFileStatus == DownloadServerice.DownLoaderStatus.NONE) {
+        DownloadServerice.DownLoaderStatus appobbFileStatus = DownloadServerice.getObbFileStatus(mData);
+        if (appFileStatus == DownloadServerice.DownLoaderStatus.NONE || appobbFileStatus == DownloadServerice.DownLoaderStatus.NONE) {
             button.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
             goOnDownload(true);
-        } else if (appFileStatus == DownloadServerice.DownLoaderStatus.UNCOMPLETE) {
+        } else if (appFileStatus == DownloadServerice.DownLoaderStatus.UNCOMPLETE || appobbFileStatus == DownloadServerice.DownLoaderStatus.UNCOMPLETE) {
             button.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
             goOnDownload(false);
         } else if (appFileStatus == DownloadServerice.DownLoaderStatus.COMPLEDTED) {
-            Uri uri = Uri.parse(mData.getDownloadUrl());
-            File sdCardPath = new File(Environment.getExternalStorageDirectory(), "yodo1");
-            File testFile = new File(sdCardPath, uri.getLastPathSegment());
-
-            DownloadServerice.installApp(mContext, Uri.fromFile(testFile));
-        } else if (appFileStatus == DownloadServerice.DownLoaderStatus.DOWNLODING) {
+            DownloadServerice.installApp(mContext, mData);
+        } else if (appFileStatus == DownloadServerice.DownLoaderStatus.DOWNLODING || appobbFileStatus == DownloadServerice.DownLoaderStatus.DOWNLODING) {
             button.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
             button.setTextColor(Color.BLACK);
@@ -176,18 +182,17 @@ public class DownloadButton extends FrameLayout implements View.OnClickListener,
     }
 
     private void goOnDownload(boolean isFirst) {
-        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions((Activity) mContext, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 55);
-            return;
-        }
         if (!isFirst) {
             LogUtils.e("yodo1", "继续下载");
             DownloadServerice.getInstance().getFetch().resume(mData.get__v());
+            if (mData.get__vobb() != 0) {
+                DownloadServerice.getInstance().getFetch().resume(mData.get__v());
+            }
         } else {
             LogUtils.e("yodo1", "开始下载");
             Uri uri = Uri.parse(mData.getDownloadUrl());
             File sdCardPath = new File(Environment.getExternalStorageDirectory(), "yodo1");
-            File testFile = new File(sdCardPath, uri.getLastPathSegment());
+            File testFile = new File(sdCardPath, mData.get_id() + uri.getLastPathSegment());
             final Request request = new Request(mData.getDownloadUrl(), testFile.getAbsolutePath());
             request.setPriority(Priority.HIGH);
             request.setNetworkType(NetworkType.ALL);
@@ -202,8 +207,25 @@ public class DownloadButton extends FrameLayout implements View.OnClickListener,
                 public void call(@NotNull Error result) {
                 }
             });
-
-
+            if (!TextUtils.isEmpty(mData.getObbDownloadUrl())) {
+                Uri uriobb = Uri.parse(mData.getObbDownloadUrl());
+                File testFileobb = new File(sdCardPath, mData.get_id() + uriobb.getLastPathSegment());
+                final Request requestobb = new Request(mData.getObbDownloadUrl(), testFileobb.getAbsolutePath());
+                requestobb.setPriority(Priority.HIGH);
+                requestobb.setNetworkType(NetworkType.ALL);
+                DownloadServerice.getInstance().getFetch().enqueue(requestobb, new Func<Request>() {
+                    @Override
+                    public void call(@NotNull Request result) {
+                        Yodo1SharedPreferences.addDownloadTask(mContext, requestobb.getId());
+                        DownloadServerice.getDownloadingList().put(requestobb.getId(), 1);
+                    }
+                }, new Func<Error>() {
+                    @Override
+                    public void call(@NotNull Error result) {
+                    }
+                });
+            }
+            //增加一个下载量
             GunqiuApi.getInstance().get(OtaAPi.createCount.replace("{appid}", mData.getAppId()).replace("{versionId}", mData.get_id())).compose(RxResultHelper.<String>handleResult()).subscribe(new RxResponse<String>() {
                 @Override
                 public void onSuccess(String result) {
@@ -277,9 +299,15 @@ public class DownloadButton extends FrameLayout implements View.OnClickListener,
     public void onProgress(@NotNull Download download, long l, long l1) {
         if (download.getId() == mData.get__v() || download.getId() == mData.get__vobb()) {
             long downloaded = download.getDownloaded();
-            int percent = (int) ((downloaded * 100) / mData.getSize());
+            int percent = 0;
+            if (download.getId() == mData.get__v()) {
+                percent = (int) ((downloaded * 100) / mData.getSize());
+                LogUtils.e("Fetch", download.getUrl() + "  get_v:" + mData.get__v() + "  downloadId:" + download.getId());
+            } else if (download.getId() == mData.get__vobb()) {
+                percent = (int) ((downloaded * 100) / mData.getObbSize());
+                LogUtils.e("Fetch", download.getUrl() + "  get__vobb:" + mData.get__vobb() + "  downloadId:" + download.getId());
+            }
             LogUtils.e("Fetch", download.getUrl() + "  onProgress,percent:" + percent + "  download:" + downloaded);
-            LogUtils.e("Fetch", download.getUrl() + "  get_v:" + mData.get__v() + "  downloadId:" + download.getId());
             if (percent >= 100) {
                 DownloadServerice.getDownloadingList().put(download.getId(), 100);
             } else {
@@ -288,12 +316,20 @@ public class DownloadButton extends FrameLayout implements View.OnClickListener,
         }
 
         //here,zjq
-        if (mData != null && DownloadServerice.getDownloadingList().get(mData.get__v()) != null) {
+        if (mData != null && (download.getId() == mData.get__v() || download.getId() == mData.get__vobb())) {
             Integer integer = DownloadServerice.getDownloadingList().get(mData.get__v());
-            LogUtils.e("Fetch", "onProgress:" + integer);
-            progressBar.setProgress(integer);
+            Integer integer2 = DownloadServerice.getDownloadingList().get(mData.get__vobb());
+            if (integer != null) {
+                LogUtils.e("Fetch", "onProgress:" + integer);
+            }
+            if (integer2 != null) {
+                LogUtils.e("Fetch", "onProgress:" + integer2);
+            }
+            int prog = (integer == null ? 0 : integer);
+            prog += (integer2 == null ? 0 : integer2);
+            progressBar.setProgress(prog);
         } else {
-            LogUtils.e("Fetch", " onProgress null");
+            LogUtils.e("Fetch", " onProgress downloadFile:" + download.getFile() + " downloadId:" + download.getId());
         }
     }
 
