@@ -16,11 +16,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.hunter.appinfomonitor.LogUtils;
 import com.hunter.appinfomonitor.MainActivity;
 import com.hunter.appinfomonitor.MyApplication;
 import com.hunter.appinfomonitor.network.okbiz.Yodo1SharedPreferences;
+import com.hunter.appinfomonitor.network.okbizfile.FileUtils;
 import com.hunter.appinfomonitor.ui.AppManager;
 import com.hunter.appinfomonitor.yodo1bean.OtaAllAppListBean;
 import com.tonyodev.fetch2.Download;
@@ -61,10 +63,10 @@ public class DownloadServerice extends Service implements FetchListener {
 
     @Override
     public void onCompleted(@NotNull Download download) {
-        installApp(this, download.getFileUri());
+        installApp(this, download);
     }
 
-    public static void installApp(Context context, Uri fileUri) {
+    public static void installApp(Context context, Download fileUri) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             //先获取是否有安装未知来源应用的权限
             boolean haveInstallPermission = AppManager.getAppManager().currentActivity().getPackageManager().canRequestPackageInstalls();
@@ -75,12 +77,27 @@ public class DownloadServerice extends Service implements FetchListener {
                 return;
             }
         }
+        File sdCardPath = new File(Environment.getExternalStorageDirectory(), "yodo1");
+        if (fileUri.getFile().endsWith("obb")) {
+            Toast.makeText(context, fileUri.getFileUri().getLastPathSegment() + "  下载完成", Toast.LENGTH_SHORT).show();
+            LogUtils.e("installApp", "fileUri uri:" + fileUri.toString());
+            //obb copy
+            Uri uriobb = Uri.parse(fileUri.getUrl());
+            File testFileobb = new File(sdCardPath, fileUri.getFile());
+            String target = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/obb/" + context.getPackageName() + "/" + uriobb.getLastPathSegment();
+            LogUtils.e("installApp", "obb target path:" + target);
+            boolean b = FileUtils.copyFile(testFileobb.getAbsolutePath(), target);
+            LogUtils.e("installApp", "obb 是否成功：" + b);
+            return;
+        } else {
+            Toast.makeText(context, fileUri.getFileUri().getLastPathSegment() + "  下载完成", Toast.LENGTH_SHORT).show();
+        }
         LogUtils.e("uri", "uri:" + fileUri.toString());
         Intent install = new Intent(Intent.ACTION_VIEW);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            install.setDataAndType(fileUri, "application/vnd.android.package-archive");
+            install.setDataAndType(fileUri.getFileUri(), "application/vnd.android.package-archive");
         } else {
-            Uri apkUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", new File(fileUri.getPath()));
+            Uri apkUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", new File(fileUri.getFile()));
             install.setDataAndType(apkUri, "application/vnd.android.package-archive");
         }
         install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -99,14 +116,29 @@ public class DownloadServerice extends Service implements FetchListener {
                 return;
             }
         }
-
-        Uri uri = Uri.parse(data.getDownloadUrl());
         File sdCardPath = new File(Environment.getExternalStorageDirectory(), "yodo1");
+        //copy obb.
+        if (!TextUtils.isEmpty(data.getObbDownloadUrl())) {
+            Uri uriobb = Uri.parse(data.getObbDownloadUrl());
+            File testFileobb = new File(sdCardPath, data.get_id() + uriobb.getLastPathSegment());
+            String targetdir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/obb/" + data.getBundleId();
+            String target = targetdir + "/" + uriobb.getLastPathSegment();
+            File targetFile = new File(targetdir);
+            if (!targetFile.exists()) {
+                targetFile.mkdirs();
+            }
+            LogUtils.e("installApp", "obb old target path:" + testFileobb.getAbsolutePath());
+            LogUtils.e("installApp", "obb new target path:" + target);
+            boolean b = FileUtils.copyFile(testFileobb.getAbsolutePath(), target);
+            LogUtils.e("installApp", "obb 是否成功：" + b);
+        }
+        Uri uri = Uri.parse(data.getDownloadUrl());
         File testFile = new File(sdCardPath, data.get_id() + uri.getLastPathSegment());
         Request request = new Request(data.getDownloadUrl(), testFile.getAbsolutePath());
         Uri fileUri = request.getFileUri();
         Intent install = new Intent(Intent.ACTION_VIEW);
-        LogUtils.e("uri", "uri:" + fileUri.toString());
+        LogUtils.e("installApp", "app uri:" + fileUri.toString());
+        LogUtils.e("installApp", "app path:" + testFile.getAbsolutePath());
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             install.setDataAndType(fileUri, "application/vnd.android.package-archive");
         } else {
