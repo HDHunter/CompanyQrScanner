@@ -1,7 +1,9 @@
 package com.hunter.appinfomonitor.yodo1page;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -24,6 +26,7 @@ import com.hunter.appinfomonitor.yodo1bean.OtaAdapterBean;
 import com.hunter.appinfomonitor.yodo1bean.OtaAllAppListBean;
 import com.hunter.appinfomonitor.yodo1bean.OtaMemberListBean;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +56,7 @@ public class Yodo1OtaApplistActivity extends AppCompatActivity implements Adapte
         }
         content = findViewById(R.id.content0);
         listView = findViewById(R.id.expanded_listview);
-        content.setText("OTA用户名：" + loginBean.getData().getUsername() + "\nOTA用户邮箱:" + loginBean.getData().getEmail());
+        content.setText("ota账户：" + loginBean.getData().getUsername() + "\nota邮箱:" + loginBean.getData().getEmail());
         otaAdapter = new OtaAdapter(Yodo1OtaApplistActivity.this, new OtaAdapterBean(loginBean));
         listView.setAdapter(otaAdapter);
         listView.setOnItemClickListener(this);
@@ -61,6 +64,26 @@ public class Yodo1OtaApplistActivity extends AppCompatActivity implements Adapte
         getTeamsInfos();
 
         AppManager.getAppManager().addActivity(this);
+
+        View viewById = findViewById(R.id.downloadmanager);
+        viewById.setVisibility(View.VISIBLE);
+        viewById.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                File sdCardPath = new File(Environment.getExternalStorageDirectory(), "yodo1");
+                Uri uri = Uri.parse("content://com.android.externalstorage.documents/document/primary:yodo1");
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setDataAndType(uri, "file/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                try {
+                    startActivityForResult(intent, 1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(Yodo1OtaApplistActivity.this, "sth error", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void getTeamsInfos() {
@@ -91,7 +114,7 @@ public class Yodo1OtaApplistActivity extends AppCompatActivity implements Adapte
 
                         @Override
                         public void onFailure(Throwable e) {
-                            Toast.makeText(Yodo1OtaApplistActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Yodo1OtaApplistActivity.this, "teams 请求失败", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -115,6 +138,7 @@ public class Yodo1OtaApplistActivity extends AppCompatActivity implements Adapte
                 OtaAllAppListBean otaLoginBean = JsonUtils.fromJson(result, OtaAllAppListBean.class);
                 if (otaLoginBean.isSuccess()) {
                     allAppList = otaLoginBean.getData().getTeams();
+                    otaAdapter.addVersionCount(allAppList);
                 }
             }
 
@@ -139,7 +163,7 @@ public class Yodo1OtaApplistActivity extends AppCompatActivity implements Adapte
             intent.putExtra("applist", allAppList.get(position));
             startActivity(intent);
         } else {
-            Toast.makeText(this, "数据未下载，或者有异常，请退出重试。", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "try later.", Toast.LENGTH_SHORT).show();
         }
     }
 }

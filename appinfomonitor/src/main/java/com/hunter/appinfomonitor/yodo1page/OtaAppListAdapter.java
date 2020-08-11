@@ -1,6 +1,7 @@
 package com.hunter.appinfomonitor.yodo1page;
 
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,10 +76,10 @@ public class OtaAppListAdapter extends BaseExpandableListAdapter {
         }
         OtaAllAppListBean.DataBean.TeamsBean.AppsBean group = getGroup(groupPosition);
         Glide.with(convertView).load(group.getIcon()).into(vh.icon);
-        vh.appName.setText(group.getAppName() + "          可下载数:" + group.getVersions().size());
+        vh.appName.setText(group.getAppName() + "             已传" + group.getVersions().size() + "个版本");
         vh.packageName.setText(group.getBundleId());
-        vh.downloadCount.setText("下载量:" + group.getTotalDownloadCount() + " 今日下载:" + group.getTodayDownloadCount().getCount());
-        vh.versionInfo.setText("当前版本号:" + group.getCurrentVersion() + "  创建者:" + group.getCreator());
+        vh.downloadCount.setText("总下载量:" + group.getTotalDownloadCount() + "               今日下载量:" + group.getTodayDownloadCount().getCount());
+        vh.versionInfo.setText("当前v号:" + group.getCurrentVersion() + "        创建者:" + group.getCreator());
         return convertView;
     }
 
@@ -99,14 +100,19 @@ public class OtaAppListAdapter extends BaseExpandableListAdapter {
             vh = (VH) convertView.getTag();
         }
         OtaAllAppListBean.DataBean.TeamsBean.AppsBean.VersionsBean child = getChild(groupPosition, childPosition);
-        vh.appName.setText("版本名:" + child.getVersionStr() + "  版本号:" + child.getVersionCode() + "  上传者:" + child.getUploader());
-        vh.packageName.setText("下载次数:" + child.getDownloadCount() + " 时间:" + child.getUploadAt());
+        vh.appName.setText("v名:" + child.getVersionStr() + "       v号:" + child.getVersionCode() + "       上传者:" + child.getUploader());
+        vh.packageName.setText("下载次数:" + child.getDownloadCount() + "         上传时间:" + child.getUploadAt().substring(0, 10));
         String obb = "";
         if (child.getObbSize() > 0) {
-            obb = "  obb大小:" + Formatter.formatFileSize(mActivity, child.getObbSize());
+            obb = "     ObbSize:" + Formatter.formatFileSize(mActivity, child.getObbSize());
         }
-        vh.downloadCount.setText("app大小:" + Formatter.formatFileSize(mActivity, child.getSize()) + obb);
-        vh.versionInfo.setText("备注:" + child.getChangelog());
+        vh.downloadCount.setText("ApkSize:" + Formatter.formatFileSize(mActivity, child.getSize()) + obb);
+        if (!TextUtils.isEmpty(child.getChangelog())) {
+            vh.versionInfo.setVisibility(View.VISIBLE);
+            vh.versionInfo.setText("备注:" + child.getChangelog());
+        } else {
+            vh.versionInfo.setVisibility(View.GONE);
+        }
         vh.download.setData(child);
 //        vh.packageName.setText(group.getBundleId());
 //        vh.downloadCount.setText("下载量:" + group.getTotalDownloadCount() + " 今日下载:" + group.getTodayDownloadCount().getCount());

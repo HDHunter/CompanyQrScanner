@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
 
         mReceiver = new UpdateSwitchReceiver();
         registerReceiver(mReceiver, new IntentFilter(ACTION_STATE_CHANGED));
-        Toast.makeText(this, "正在读取本机中的应用,loading...", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "正在读取本机中的应用,loading...", Toast.LENGTH_SHORT).show();
 
         findViewById(R.id.gotoyodo1).setOnClickListener(new View.OnClickListener() {
             @Override

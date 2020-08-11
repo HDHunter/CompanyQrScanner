@@ -2,14 +2,15 @@ package com.hunter.appinfomonitor.yodo1page;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.hunter.appinfomonitor.R;
 import com.hunter.appinfomonitor.yodo1bean.OtaAdapterBean;
+import com.hunter.appinfomonitor.yodo1bean.OtaAllAppListBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,7 @@ public class OtaAdapter extends BaseExpandableListAdapter {
             TeamBean tb = new TeamBean();
             tb.name = name;
             tb.role = convertView.findViewById(R.id.teamnamerole);
+            tb.teamnamedesp = convertView.findViewById(R.id.teamnamedesp);
             tb.count = convertView.findViewById(R.id.teammemebercount);
             convertView.setTag(tb);
         }
@@ -76,11 +78,18 @@ public class OtaAdapter extends BaseExpandableListAdapter {
         vh.name.setText(group.getName());
         vh.role.setText(group.getRole());
         final List<String> members = group.getMembers();
+        OtaAllAppListBean.DataBean.TeamsBean apps = group.getApps();
+        if (apps != null && apps.getApps() != null) {
+            vh.teamnamedesp.setText(apps.getApps().size() + "个app");
+        } else {
+            vh.teamnamedesp.setText(null);
+        }
         if (members == null || members.size() <= 0) {
-            vh.count.setVisibility(View.GONE);
+            vh.count.setVisibility(View.VISIBLE);
+            vh.count.setText("成员:0人");
         } else {
             vh.count.setVisibility(View.VISIBLE);
-            vh.count.setText("共有:" + members.size() + "人");
+            vh.count.setText("成员:" + members.size() + "人");
             vh.count.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -115,9 +124,23 @@ public class OtaAdapter extends BaseExpandableListAdapter {
         return false;
     }
 
+    public void addVersionCount(List<OtaAllAppListBean.DataBean.TeamsBean> allAppList) {
+        List<OtaAdapterBean.TeamsGroupBean> teams = mList.getTeams();
+        for (OtaAdapterBean.TeamsGroupBean b : teams) {
+            String teamid = b.getTeamid();
+            for (OtaAllAppListBean.DataBean.TeamsBean t : allAppList) {
+                if (TextUtils.equals(teamid, t.get_id())) {
+                    b.setApps(t);
+                    break;
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
     public class TeamBean {
-        TextView name;
+        TextView name, teamnamedesp;
         TextView role;
-        Button count;
+        TextView count;
     }
 }

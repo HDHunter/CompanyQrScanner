@@ -6,9 +6,9 @@
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingLeft="10dp"
-    android:paddingTop="16dp"
+    android:paddingTop="10dp"
     android:paddingRight="8dp"
-    android:paddingBottom="16dp">
+    android:paddingBottom="10dp">
 
     <TextView
         android:id="@+id/teamname"
@@ -16,31 +16,35 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-condensed"
         android:textColor="#000"
-        android:textSize="19sp"
-        android:textStyle="bold"
+        android:textSize="17sp"
         tools:text="womendoushihaohaizi" />
 
-    <android.support.v4.widget.Space
+    <TextView
+        android:id="@+id/teamnamedesp"
         android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_weight="1" />
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="2dp"
+        android:textAlignment="viewEnd"
+        android:textSize="8sp"
+        tools:text="abcdef" />
 
     <TextView
         android:id="@+id/teamnamerole"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-condensed"
-        android:textColor="#0f0"
-        android:textSize="19sp"
+        android:fontFamily="sans-serif-light"
+        android:paddingRight="4dp"
+        android:textColor="@android:color/holo_green_dark"
+        android:textSize="13sp"
         tools:text="guest" />
 
-    <Button
+    <TextView
         android:id="@+id/teammemebercount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="0dp"
-        android:minWidth="18dp"
-        android:minHeight="18dp"
+        android:background="@drawable/dcn_shape_float_level_vip_bg"
         android:padding="6dp"
         tools:text="共3人" />
 </LinearLayout>

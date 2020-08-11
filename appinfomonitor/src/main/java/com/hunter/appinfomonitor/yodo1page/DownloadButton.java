@@ -34,12 +34,15 @@ import com.tonyodev.fetch2.NetworkType;
 import com.tonyodev.fetch2.Priority;
 import com.tonyodev.fetch2.Request;
 import com.tonyodev.fetch2core.DownloadBlock;
+import com.tonyodev.fetch2core.Extras;
 import com.tonyodev.fetch2core.Func;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DownloadButton extends FrameLayout implements View.OnClickListener, FetchListener {
 
@@ -86,7 +89,14 @@ public class DownloadButton extends FrameLayout implements View.OnClickListener,
         button.setTag(null);
         DownloadServerice.DownLoaderStatus appFileStatus = DownloadServerice.getAppFileStatus(mData);
         DownloadServerice.DownLoaderStatus appobbFileStatus = DownloadServerice.getObbFileStatus(mData);
-        if (appFileStatus == DownloadServerice.DownLoaderStatus.NONE || appobbFileStatus == DownloadServerice.DownLoaderStatus.NONE) {
+        if (mData.getDownloadUrl().endsWith("ipa")) {
+            button.setText("ipa苹果应用");
+            button.setTextColor(Color.RED);
+            button.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+            button.setOnClickListener(this);
+            progressBar.setOnClickListener(this);
+        } else if (appFileStatus == DownloadServerice.DownLoaderStatus.NONE || appobbFileStatus == DownloadServerice.DownLoaderStatus.NONE) {
             button.setText("下载");
             button.setTextColor(Color.BLACK);
             button.setVisibility(View.VISIBLE);
@@ -110,7 +120,7 @@ public class DownloadButton extends FrameLayout implements View.OnClickListener,
         } else if (appFileStatus == DownloadServerice.DownLoaderStatus.DOWNLODING || appobbFileStatus == DownloadServerice.DownLoaderStatus.DOWNLODING) {
             button.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
-            progressBar.setProgress(DownloadServerice.getDownloadingList().get(mData.get__v()));
+            progressBar.setProgress(DownloadServerice.getDownloadingList().get(mData.get__v()) + DownloadServerice.getDownloadingList().get(mData.get__vobb()));
             button.setOnClickListener(this);
             progressBar.setOnClickListener(this);
         } else {
@@ -194,8 +204,36 @@ public class DownloadButton extends FrameLayout implements View.OnClickListener,
             File sdCardPath = new File(Environment.getExternalStorageDirectory(), "yodo1");
             File testFile = new File(sdCardPath, mData.get_id() + uri.getLastPathSegment());
             final Request request = new Request(mData.getDownloadUrl(), testFile.getAbsolutePath());
-            request.setPriority(Priority.HIGH);
+            request.setTag(mData.getBundleId());
+            request.setPriority(Priority.NORMAL);
             request.setNetworkType(NetworkType.ALL);
+
+            Request requestobb = null;
+            File testFileobb = null;
+            if (!TextUtils.isEmpty(mData.getObbDownloadUrl())) {
+                Uri uriobb = Uri.parse(mData.getObbDownloadUrl());
+                testFileobb = new File(sdCardPath, mData.get_id() + uriobb.getLastPathSegment());
+                requestobb = new Request(mData.getObbDownloadUrl(), testFileobb.getAbsolutePath());
+                requestobb.setTag(mData.getBundleId());
+                requestobb.setPriority(Priority.HIGH);
+                requestobb.setNetworkType(NetworkType.ALL);
+            }
+
+
+            Map<String, String> map = new HashMap<>();
+            map.put("apkid", "" + request.getId());
+            map.put("apkpath", testFile.getAbsolutePath());
+            map.put("apkUrl", mData.getDownloadUrl());
+            if (requestobb != null) {
+                map.put("obbid", "" + requestobb.getId());
+                map.put("obbpath", testFileobb.getAbsolutePath());
+                map.put("obbUrl", mData.getObbDownloadUrl());
+            }
+            Extras value = new Extras(map);
+            request.setExtras(value);
+            if (requestobb != null) {
+                requestobb.setExtras(value);
+            }
             DownloadServerice.getInstance().getFetch().enqueue(request, new Func<Request>() {
                 @Override
                 public void call(@NotNull Request result) {
@@ -207,17 +245,13 @@ public class DownloadButton extends FrameLayout implements View.OnClickListener,
                 public void call(@NotNull Error result) {
                 }
             });
-            if (!TextUtils.isEmpty(mData.getObbDownloadUrl())) {
-                Uri uriobb = Uri.parse(mData.getObbDownloadUrl());
-                File testFileobb = new File(sdCardPath, mData.get_id() + uriobb.getLastPathSegment());
-                final Request requestobb = new Request(mData.getObbDownloadUrl(), testFileobb.getAbsolutePath());
-                requestobb.setPriority(Priority.HIGH);
-                requestobb.setNetworkType(NetworkType.ALL);
+            if (requestobb != null) {
+                final Request finalRequestobb = requestobb;
                 DownloadServerice.getInstance().getFetch().enqueue(requestobb, new Func<Request>() {
                     @Override
                     public void call(@NotNull Request result) {
-                        Yodo1SharedPreferences.addDownloadTask(mContext, requestobb.getId());
-                        DownloadServerice.getDownloadingList().put(requestobb.getId(), 1);
+                        Yodo1SharedPreferences.addDownloadTask(mContext, finalRequestobb.getId());
+                        DownloadServerice.getDownloadingList().put(finalRequestobb.getId(), 1);
                     }
                 }, new Func<Error>() {
                     @Override
@@ -258,15 +292,29 @@ public class DownloadButton extends FrameLayout implements View.OnClickListener,
     @Override
     public void onCompleted(@NotNull Download download) {
         if (download.getId() == mData.get__v() || download.getId() == mData.get__vobb()) {
-            LogUtils.e("Fetch", download.getUrl() + "  onCompleted");
-            progressBar.setProgress(0);
-            progressBar.setVisibility(View.GONE);
-            button.setVisibility(View.VISIBLE);
-            button.setTextColor(Color.BLUE);
-            button.setText("已下载");
+            if (mData.get__vobb() != 0) {
+                DownloadServerice.DownLoaderStatus appFileStatus = DownloadServerice.getAppFileStatus(mData);
+                DownloadServerice.DownLoaderStatus obbFileStatus = DownloadServerice.getObbFileStatus(mData);
+                if (appFileStatus == DownloadServerice.DownLoaderStatus.COMPLEDTED && obbFileStatus == DownloadServerice.DownLoaderStatus.COMPLEDTED) {
+                    LogUtils.e("Fetch", download.getUrl() + "  onCompleted");
+                    progressBar.setProgress(0);
+                    progressBar.setVisibility(View.GONE);
+                    button.setVisibility(View.VISIBLE);
+                    button.setTextColor(Color.BLUE);
+                    button.setText("已下载");
+                }
+            } else {
+                DownloadServerice.DownLoaderStatus appFileStatus = DownloadServerice.getAppFileStatus(mData);
+                if (appFileStatus == DownloadServerice.DownLoaderStatus.COMPLEDTED) {
+                    LogUtils.e("Fetch", download.getUrl() + "  onCompleted");
+                    progressBar.setProgress(0);
+                    progressBar.setVisibility(View.GONE);
+                    button.setVisibility(View.VISIBLE);
+                    button.setTextColor(Color.BLUE);
+                    button.setText("已下载");
+                }
+            }
         }
-        DownloadServerice.getDownloadingList().remove(download.getId());
-        Yodo1SharedPreferences.removeDownloadTask(mContext, download.getId());
     }
 
     @Override
@@ -303,15 +351,23 @@ public class DownloadButton extends FrameLayout implements View.OnClickListener,
             if (download.getId() == mData.get__v()) {
                 percent = (int) ((downloaded * 100) / mData.getSize());
                 LogUtils.e("Fetch", download.getUrl() + "  get_v:" + mData.get__v() + "  downloadId:" + download.getId());
+
+                LogUtils.e("Fetch", download.getUrl() + "  onProgress,percent:" + percent + "  download:" + downloaded);
+                if (percent >= 100) {
+                    DownloadServerice.getDownloadingList().put(download.getId(), 100);
+                } else {
+                    DownloadServerice.getDownloadingList().put(download.getId(), percent);
+                }
             } else if (download.getId() == mData.get__vobb()) {
                 percent = (int) ((downloaded * 100) / mData.getObbSize());
                 LogUtils.e("Fetch", download.getUrl() + "  get__vobb:" + mData.get__vobb() + "  downloadId:" + download.getId());
-            }
-            LogUtils.e("Fetch", download.getUrl() + "  onProgress,percent:" + percent + "  download:" + downloaded);
-            if (percent >= 100) {
-                DownloadServerice.getDownloadingList().put(download.getId(), 100);
-            } else {
-                DownloadServerice.getDownloadingList().put(download.getId(), percent);
+
+                LogUtils.e("Fetch", download.getUrl() + "  onProgress,percent:" + percent + "  download:" + downloaded);
+                if (percent >= 100) {
+                    DownloadServerice.getDownloadingList().put(download.getId(), 100);
+                } else {
+                    DownloadServerice.getDownloadingList().put(download.getId(), percent);
+                }
             }
         }
 
@@ -320,16 +376,14 @@ public class DownloadButton extends FrameLayout implements View.OnClickListener,
             Integer integer = DownloadServerice.getDownloadingList().get(mData.get__v());
             Integer integer2 = DownloadServerice.getDownloadingList().get(mData.get__vobb());
             if (integer != null) {
-                LogUtils.e("Fetch", "onProgress:" + integer);
+                LogUtils.e("Fetch", "onProgress apk:" + integer);
             }
             if (integer2 != null) {
-                LogUtils.e("Fetch", "onProgress:" + integer2);
+                LogUtils.e("Fetch", "onProgress obb:" + integer2);
             }
             int prog = (integer == null ? 0 : integer);
             prog += (integer2 == null ? 0 : integer2);
             progressBar.setProgress(prog);
-        } else {
-            LogUtils.e("Fetch", " onProgress downloadFile:" + download.getFile() + " downloadId:" + download.getId());
         }
     }
 

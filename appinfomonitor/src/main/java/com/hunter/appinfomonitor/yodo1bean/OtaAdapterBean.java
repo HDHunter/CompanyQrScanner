@@ -27,7 +27,16 @@ public class OtaAdapterBean implements Serializable {
         private String teamid;
         private String name;
         private String role;
+        private OtaAllAppListBean.DataBean.TeamsBean apps;
         private List<String> members;
+
+        public OtaAllAppListBean.DataBean.TeamsBean getApps() {
+            return apps;
+        }
+
+        public void setApps(OtaAllAppListBean.DataBean.TeamsBean apps) {
+            this.apps = apps;
+        }
 
         public List<String> getMembers() {
             return members;

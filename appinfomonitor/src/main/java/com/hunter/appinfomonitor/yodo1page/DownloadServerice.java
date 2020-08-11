@@ -32,6 +32,7 @@ import com.tonyodev.fetch2.FetchConfiguration;
 import com.tonyodev.fetch2.FetchListener;
 import com.tonyodev.fetch2.Request;
 import com.tonyodev.fetch2core.DownloadBlock;
+import com.tonyodev.fetch2core.Extras;
 import com.tonyodev.fetch2okhttp.OkHttpDownloader;
 
 import org.jetbrains.annotations.NotNull;
@@ -63,7 +64,33 @@ public class DownloadServerice extends Service implements FetchListener {
 
     @Override
     public void onCompleted(@NotNull Download download) {
-        installApp(this, download);
+        Yodo1SharedPreferences.removeDownloadTask(this, download.getId());
+        DownloadServerice.getDownloadingList().remove(download.getId());
+
+        Extras extras = download.getExtras();
+        int apkid = extras.getInt("apkid", 0);
+        int obbid = extras.getInt("obbid", 0);
+        if (obbid != 0) {
+            if (download.getFile().endsWith("obb")) {
+                boolean hasDownloaded = Yodo1SharedPreferences.hasDownloadTask(this, apkid);
+                if (!hasDownloaded) {
+                    installApp(this, download);
+                } else {
+                    LogUtils.e("installApp", "obb 下载完成，apk 正在下载");
+                    return;
+                }
+            } else {
+                boolean hasDownloaded = Yodo1SharedPreferences.hasDownloadTask(this, obbid);
+                if (!hasDownloaded) {
+                    installApp(this, download);
+                } else {
+                    LogUtils.e("installApp", "apk 下载完成，obb 正在下载");
+                    return;
+                }
+            }
+        } else {
+            installApp(this, download);
+        }
     }
 
     public static void installApp(Context context, Download fileUri) {
@@ -77,27 +104,39 @@ public class DownloadServerice extends Service implements FetchListener {
                 return;
             }
         }
-        File sdCardPath = new File(Environment.getExternalStorageDirectory(), "yodo1");
-        if (fileUri.getFile().endsWith("obb")) {
-            Toast.makeText(context, fileUri.getFileUri().getLastPathSegment() + "  下载完成", Toast.LENGTH_SHORT).show();
-            LogUtils.e("installApp", "fileUri uri:" + fileUri.toString());
-            //obb copy
-            Uri uriobb = Uri.parse(fileUri.getUrl());
-            File testFileobb = new File(sdCardPath, fileUri.getFile());
-            String target = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/obb/" + context.getPackageName() + "/" + uriobb.getLastPathSegment();
-            LogUtils.e("installApp", "obb target path:" + target);
-            boolean b = FileUtils.copyFile(testFileobb.getAbsolutePath(), target);
-            LogUtils.e("installApp", "obb 是否成功：" + b);
+        if (fileUri.getFile().endsWith("ipa")) {
+            Toast.makeText(context, "ipa苹果应用,无法安装", Toast.LENGTH_SHORT).show();
             return;
-        } else {
-            Toast.makeText(context, fileUri.getFileUri().getLastPathSegment() + "  下载完成", Toast.LENGTH_SHORT).show();
         }
-        LogUtils.e("uri", "uri:" + fileUri.toString());
+        Extras extras = fileUri.getExtras();
+        String apkpath = extras.getString("apkpath", "");
+        String apkUrl = extras.getString("apkUrl", "");
+        String obbpath = extras.getString("obbpath", "");
+        String obbUrl = extras.getString("obbUrl", "");
+        String packagename = fileUri.getTag();
+        LogUtils.e("install App extra", "apkpath:" + apkpath + " apkUrl:" + apkUrl);
+        LogUtils.e("install Obb extra", "obbpath:" + obbpath + " obbUrl:" + obbUrl);
+
+        if (!TextUtils.isEmpty(obbpath) && !TextUtils.isEmpty(obbUrl)) {
+            //obb copy
+            Uri uriobb = Uri.parse(obbUrl);
+            String s = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/obb/" + packagename;
+            File obbs = new File(s);
+            if (!obbs.exists()) {
+                obbs.mkdirs();
+            }
+            String target = s + "/" + uriobb.getLastPathSegment();
+            LogUtils.e("installApp", "obb target path:" + target);
+            boolean b = FileUtils.copyFile(obbpath, target);
+            LogUtils.e("installApp", "obb 是否成功：" + b);
+        }
+
+        Toast.makeText(context, packagename + "  下载完成", Toast.LENGTH_SHORT).show();
         Intent install = new Intent(Intent.ACTION_VIEW);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            install.setDataAndType(fileUri.getFileUri(), "application/vnd.android.package-archive");
+            install.setDataAndType(Uri.fromFile(new File(apkpath)), "application/vnd.android.package-archive");
         } else {
-            Uri apkUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", new File(fileUri.getFile()));
+            Uri apkUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", new File(apkpath));
             install.setDataAndType(apkUri, "application/vnd.android.package-archive");
         }
         install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -115,6 +154,10 @@ public class DownloadServerice extends Service implements FetchListener {
                 AppManager.getAppManager().currentActivity().startActivityForResult(intent, 11111);
                 return;
             }
+        }
+        if (data.getDownloadUrl().endsWith("ipa")) {
+            Toast.makeText(context, "ipa苹果应用,无法安装", Toast.LENGTH_SHORT).show();
+            return;
         }
         File sdCardPath = new File(Environment.getExternalStorageDirectory(), "yodo1");
         //copy obb.
@@ -217,7 +260,13 @@ public class DownloadServerice extends Service implements FetchListener {
 
 
     public static DownloadServerice.DownLoaderStatus getAppFileStatus(OtaAllAppListBean.DataBean.TeamsBean.AppsBean.VersionsBean data) {
-        if (data == null || TextUtils.isEmpty(data.getDownloadUrl()) || TextUtils.isEmpty(data.get_id())) {
+        Uri uri = Uri.parse(data.getDownloadUrl());
+        File sdCardPath = new File(Environment.getExternalStorageDirectory(), "yodo1");
+        File testFile = new File(sdCardPath, data.get_id() + uri.getLastPathSegment());
+        int downloadid = new Request(data.getDownloadUrl(), testFile.getAbsolutePath()).getId();
+        data.set__v(downloadid);
+
+        if (TextUtils.isEmpty(data.getDownloadUrl()) || TextUtils.isEmpty(data.get_id())) {
             return DownLoaderStatus.NO;
         } else if (data.get__v() != 0 && getDownloadingList().get(data.get__v()) != null) {
             return DownLoaderStatus.DOWNLODING;
@@ -225,11 +274,6 @@ public class DownloadServerice extends Service implements FetchListener {
             //暂停，or未完成
             return DownLoaderStatus.UNCOMPLETE;
         } else {
-            Uri uri = Uri.parse(data.getDownloadUrl());
-            File sdCardPath = new File(Environment.getExternalStorageDirectory(), "yodo1");
-            File testFile = new File(sdCardPath, data.get_id() + uri.getLastPathSegment());
-            int downloadid = new Request(data.getDownloadUrl(), testFile.getAbsolutePath()).getId();
-            data.set__v(downloadid);
             if (getDownloadingList().get(downloadid) != null) {
                 return DownLoaderStatus.DOWNLODING;
             } else if (Yodo1SharedPreferences.hasDownloadTask(MyApplication.mApplication, downloadid)) {
@@ -244,18 +288,20 @@ public class DownloadServerice extends Service implements FetchListener {
     }
 
     public static DownloadServerice.DownLoaderStatus getObbFileStatus(OtaAllAppListBean.DataBean.TeamsBean.AppsBean.VersionsBean data) {
-        if (data == null || TextUtils.isEmpty(data.getObbDownloadUrl())) {
+        if (TextUtils.isEmpty(data.getObbDownloadUrl())) {
             return DownLoaderStatus.NO;
-        } else if (data.get__vobb() != 0 && getDownloadingList().get(data.get__vobb()) != null) {
+        }
+        Uri uri = Uri.parse(data.getObbDownloadUrl());
+        File sdCardPath = new File(Environment.getExternalStorageDirectory(), "yodo1");
+        File testFile = new File(sdCardPath, data.get_id() + uri.getLastPathSegment());
+        int downloadid = new Request(data.getObbDownloadUrl(), testFile.getAbsolutePath()).getId();
+        data.set__vobb(downloadid);
+
+        if (data.get__vobb() != 0 && getDownloadingList().get(data.get__vobb()) != null) {
             return DownLoaderStatus.DOWNLODING;
         } else if (data.get__vobb() != 0 && Yodo1SharedPreferences.hasDownloadTask(MyApplication.mApplication, data.get__vobb())) {
             return DownLoaderStatus.UNCOMPLETE;
         } else {
-            Uri uri = Uri.parse(data.getObbDownloadUrl());
-            File sdCardPath = new File(Environment.getExternalStorageDirectory(), "yodo1");
-            File testFile = new File(sdCardPath, data.get_id() + uri.getLastPathSegment());
-            int downloadid = new Request(data.getDownloadUrl(), testFile.getAbsolutePath()).getId();
-            data.set__vobb(downloadid);
             if (getDownloadingList().get(downloadid) != null) {
                 return DownLoaderStatus.DOWNLODING;
             } else if (Yodo1SharedPreferences.hasDownloadTask(MyApplication.mApplication, downloadid)) {

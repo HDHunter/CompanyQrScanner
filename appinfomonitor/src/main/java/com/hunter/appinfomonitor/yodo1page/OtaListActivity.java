@@ -43,7 +43,7 @@ public class OtaListActivity extends Activity {
             bean.setName(name);
         }
 
-        content.setText("列表，总数：" + stringlist.size());
+        content.setText("总人数：" + stringlist.size());
 
         OtaAdapter otaAdapter = new OtaAdapter(OtaListActivity.this, new OtaAdapterBean(loginBean));
         listView.setAdapter(otaAdapter);
