@@ -8,15 +8,27 @@ android {
         applicationId "com.hunter.appinfomonitor"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 20200619
-        versionName "20200619"
+        versionCode 20200811
+        versionName "20200811"
     }
+
+    signingConfigs {
+        release {
+            storeFile file("../hunter.keystore")
+            storePassword "abcde12345"
+            keyAlias "Hunter"
+            keyPassword "abcde12345"
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     lintOptions {
         abortOnError false
     }
