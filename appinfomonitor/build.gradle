@@ -8,8 +8,8 @@ android {
         applicationId "com.hunter.appinfomonitor"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 20200811
-        versionName "20200811"
+        versionCode 20200812
+        versionName "20200812"
     }
 
     signingConfigs {
