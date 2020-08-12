@@ -215,7 +215,6 @@ public class DownloadServerice extends Service implements FetchListener {
 
     @Override
     public void onProgress(@NotNull Download download, long l, long l1) {
-
     }
 
     @Override

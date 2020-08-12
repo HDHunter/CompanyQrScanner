@@ -1,9 +1,7 @@
 package com.hunter.appinfomonitor.yodo1page;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -26,7 +24,6 @@ import com.hunter.appinfomonitor.yodo1bean.OtaAdapterBean;
 import com.hunter.appinfomonitor.yodo1bean.OtaAllAppListBean;
 import com.hunter.appinfomonitor.yodo1bean.OtaMemberListBean;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,18 +67,9 @@ public class Yodo1OtaApplistActivity extends AppCompatActivity implements Adapte
         viewById.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                File sdCardPath = new File(Environment.getExternalStorageDirectory(), "yodo1");
-                Uri uri = Uri.parse("content://com.android.externalstorage.documents/document/primary:yodo1");
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setDataAndType(uri, "file/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                try {
-                    startActivityForResult(intent, 1);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(Yodo1OtaApplistActivity.this, "sth error", Toast.LENGTH_SHORT).show();
-                }
+
+                Intent intent = new Intent(Yodo1OtaApplistActivity.this, DownloadListActivity.class);
+                startActivityForResult(intent, 1111);
             }
         });
     }
@@ -129,6 +117,11 @@ public class Yodo1OtaApplistActivity extends AppCompatActivity implements Adapte
                 getAppList();
             }
         }, timeDuration + 100);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void getAppList() {

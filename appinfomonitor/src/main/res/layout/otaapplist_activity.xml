@@ -29,6 +29,8 @@
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
             android:text="下载管理"
+            android:textColor="@android:color/holo_orange_dark"
+            android:textStyle="bold"
             android:visibility="gone"
             tools:visibility="visible" />
     </LinearLayout>

@@ -44,6 +44,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author yodo1
+ */
 public class DownloadButton extends FrameLayout implements View.OnClickListener, FetchListener {
 
 
@@ -120,7 +123,9 @@ public class DownloadButton extends FrameLayout implements View.OnClickListener,
         } else if (appFileStatus == DownloadServerice.DownLoaderStatus.DOWNLODING || appobbFileStatus == DownloadServerice.DownLoaderStatus.DOWNLODING) {
             button.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
-            progressBar.setProgress(DownloadServerice.getDownloadingList().get(mData.get__v()) + DownloadServerice.getDownloadingList().get(mData.get__vobb()));
+            Integer integer = DownloadServerice.getDownloadingList().get(mData.get__v());
+            Integer integer1 = DownloadServerice.getDownloadingList().get(mData.get__vobb());
+            progressBar.setProgress((integer == null ? 0 : integer.intValue()) + (integer1 == null ? 0 : integer1.intValue()));
             button.setOnClickListener(this);
             progressBar.setOnClickListener(this);
         } else {
@@ -167,11 +172,17 @@ public class DownloadButton extends FrameLayout implements View.OnClickListener,
         } else if (appFileStatus == DownloadServerice.DownLoaderStatus.COMPLEDTED) {
             DownloadServerice.installApp(mContext, mData);
         } else if (appFileStatus == DownloadServerice.DownLoaderStatus.DOWNLODING || appobbFileStatus == DownloadServerice.DownLoaderStatus.DOWNLODING) {
-            button.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
-            button.setTextColor(Color.BLACK);
-            button.setText("暂停下载");
-            pauseDownload();
+            if (TextUtils.equals(button.getText(), "暂停下载")) {
+                button.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+                goOnDownload(true);
+            } else {
+                button.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                button.setTextColor(Color.BLACK);
+                button.setText("暂停下载");
+                pauseDownload();
+            }
         } else {
             button.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
@@ -381,8 +392,10 @@ public class DownloadButton extends FrameLayout implements View.OnClickListener,
             if (integer2 != null) {
                 LogUtils.e("Fetch", "onProgress obb:" + integer2);
             }
-            int prog = (integer == null ? 0 : integer);
-            prog += (integer2 == null ? 0 : integer2);
+            int prog = (integer == null ? 100 : integer);
+            if (!TextUtils.isEmpty(mData.getObbDownloadUrl())) {
+                prog += (integer2 == null ? 100 : integer2);
+            }
             progressBar.setProgress(prog);
         }
     }

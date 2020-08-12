@@ -7,13 +7,14 @@
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
 
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
 
     <application
@@ -58,6 +59,8 @@
         <activity android:name=".yodo1page.Yodo1OtaApplistActivity" />
         <activity android:name=".yodo1page.OtaListActivity" />
         <activity android:name=".yodo1page.OtaAppListActivity" />
+        <activity android:name=".Yodo1QrCodeActivity" />
+        <activity android:name=".yodo1page.DownloadListActivity" />
 
 
         <service

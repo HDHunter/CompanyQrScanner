@@ -56,4 +56,8 @@ dependencies {
 
     implementation "com.tonyodev.fetch2:fetch2:3.0.10"
     implementation "com.tonyodev.fetch2okhttp:fetch2okhttp:3.0.10"
+
+
+
+    implementation 'cn.bingoogolapple:bga-qrcode-zbar:1.3.7'
 }

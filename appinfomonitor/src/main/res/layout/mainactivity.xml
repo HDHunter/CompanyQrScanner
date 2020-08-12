@@ -74,7 +74,7 @@
             android:minWidth="0dp"
             android:minHeight="0dp"
             android:padding="4dp"
-            android:text="yodo1Apps"
+            android:text="过滤yodo1App"
             android:textAllCaps="false"
             android:textColor="#000"
             android:textSize="10sp" />
@@ -110,7 +110,10 @@
             android:background="#50303030"
             android:minWidth="0dp"
             android:minHeight="0dp"
-            android:padding="4dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="4dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="4dp"
             android:text="yodo1开日志"
             android:textAllCaps="false"
             android:textSize="10sp" />
@@ -144,13 +147,24 @@
                 android:layout_height="match_parent" />
         </android.support.v4.widget.SwipeRefreshLayout>
 
-        <View
-            android:id="@+id/gotoyodo1"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:background="#280000f0" />
+            android:orientation="horizontal">
+
+            <View
+                android:id="@+id/gotoyodo1"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="#280000f0" />
+            <View
+                android:id="@+id/gotoyodo2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/qrcode" />
+        </LinearLayout>
     </RelativeLayout>
 
 </LinearLayout>

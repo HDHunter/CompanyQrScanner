@@ -360,6 +360,18 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, Yodo1Activity.class));
             }
         });
+        findViewById(R.id.gotoyodo2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE};
+                if (ContextCompat.checkSelfPermission(MainActivity.this, perms[0]) == PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(MainActivity.this, perms[0]) == PackageManager.PERMISSION_GRANTED) {
+                    startActivity(new Intent(MainActivity.this, Yodo1QrCodeActivity.class));
+                } else {
+                    ActivityCompat.requestPermissions(MainActivity.this, perms, 111);
+                }
+            }
+        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(new Intent(this, DownloadServerice.class));
@@ -408,7 +420,7 @@ public class MainActivity extends AppCompatActivity {
         infos.add(appInfoModel);
 
         adapter.setData(infos);
-        info.setText("共有app:" + infos.size() + "个,用户app:" + userAppCount + "个,yodo1 app共:" + yodo1Count + "个。");
+        info.setText("All:" + infos.size() + "个,User:" + userAppCount + "个,yodo1:" + yodo1Count + "个。");
     }
 
     private String updateInfos() {

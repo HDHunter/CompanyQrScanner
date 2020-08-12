@@ -1,8 +1,10 @@
 package com.hunter.appinfomonitor.yodo1page;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
@@ -50,6 +52,16 @@ public class OtaListActivity extends Activity {
         listView.setOnItemClickListener(null);
         AppManager.getAppManager().addActivity(this);
 
+        View viewById = findViewById(R.id.downloadmanager);
+        viewById.setVisibility(View.VISIBLE);
+        viewById.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(OtaListActivity.this, DownloadListActivity.class);
+                startActivityForResult(intent, 1111);
+            }
+        });
     }
 
     @Override

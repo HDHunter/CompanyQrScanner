@@ -42,6 +42,9 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+/**
+ * @author yodo1
+ */
 public class Yodo1Activity extends AppCompatActivity {
 
 
@@ -146,6 +149,21 @@ public class Yodo1Activity extends AppCompatActivity {
                 } else {
                     otaLogin(sn, sp);
                 }
+            }
+        });
+        findViewById(R.id.ota_icon).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(Yodo1Activity.this, DownloadListActivity.class);
+                startActivityForResult(intent, 1111);
+            }
+        });
+        findViewById(R.id.ota_downloadm).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Yodo1Activity.this, DownloadListActivity.class);
+                startActivityForResult(intent, 1111);
             }
         });
         runOnUiThread(new Runnable() {
