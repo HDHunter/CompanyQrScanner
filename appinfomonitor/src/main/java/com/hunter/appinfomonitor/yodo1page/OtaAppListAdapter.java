@@ -101,7 +101,7 @@ public class OtaAppListAdapter extends BaseExpandableListAdapter {
         }
         OtaAllAppListBean.DataBean.TeamsBean.AppsBean.VersionsBean child = getChild(groupPosition, childPosition);
         vh.appName.setText("v名:" + child.getVersionStr() + "       v号:" + child.getVersionCode() + "       上传者:" + child.getUploader());
-        vh.packageName.setText("下载次数:" + child.getDownloadCount() + "         上传时间:" + child.getUploadAt().substring(0, 10));
+        vh.packageName.setText("下载次数:" + child.getDownloadCount() + "         上传时间:" + child.getUploadAt().substring(0, 19).replace("T", " "));
         String obb = "";
         if (child.getObbSize() > 0) {
             obb = "     ObbSize:" + Formatter.formatFileSize(mActivity, child.getObbSize());
