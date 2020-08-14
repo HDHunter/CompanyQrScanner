@@ -16,6 +16,7 @@ import com.hunter.appinfomonitor.R;
 import com.hunter.appinfomonitor.network.okbiz.GunqiuApi;
 import com.hunter.appinfomonitor.network.okbiz.RxResponse;
 import com.hunter.appinfomonitor.network.okbiz.RxResultHelper;
+import com.hunter.appinfomonitor.network.okbiz.Yodo1SharedPreferences;
 import com.hunter.appinfomonitor.ui.AppManager;
 import com.hunter.appinfomonitor.ui.JsonUtils;
 import com.hunter.appinfomonitor.ui.OtaAPi;
@@ -23,6 +24,8 @@ import com.hunter.appinfomonitor.yodo1bean.OTALoginBean;
 import com.hunter.appinfomonitor.yodo1bean.OtaAdapterBean;
 import com.hunter.appinfomonitor.yodo1bean.OtaAllAppListBean;
 import com.hunter.appinfomonitor.yodo1bean.OtaMemberListBean;
+
+import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -67,9 +70,46 @@ public class Yodo1OtaApplistActivity extends AppCompatActivity implements Adapte
         viewById.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent = new Intent(Yodo1OtaApplistActivity.this, DownloadListActivity.class);
                 startActivityForResult(intent, 1111);
+            }
+        });
+
+        View viewById1 = findViewById(R.id.gointo_pa);
+        viewById1.setVisibility(View.VISIBLE);
+        viewById1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                palogin();
+            }
+        });
+    }
+
+    private void palogin() {
+        JSONObject jsonObject = new JSONObject();
+        String username = Yodo1SharedPreferences.getString(this, "username");
+        String password = Yodo1SharedPreferences.getString(this, "password");
+        try {
+            jsonObject.put("password", password);
+            jsonObject.put("timestamp", System.currentTimeMillis());
+            jsonObject.put("type", "ldap");
+            jsonObject.put("username", username);
+            jsonObject.put("loginFree", false);
+            jsonObject.put("sign", "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        GunqiuApi.getInstance().post(OtaAPi.palogin, jsonObject.toString()).compose(RxResultHelper.<String>handleResult()).subscribe(new RxResponse<String>() {
+            @Override
+            public void onSuccess(String result) {
+
+                Intent intent = new Intent(Yodo1OtaApplistActivity.this, PaDownloadListActivity.class);
+                startActivityForResult(intent, 1112);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+
             }
         });
     }

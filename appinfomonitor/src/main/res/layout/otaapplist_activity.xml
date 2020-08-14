@@ -43,4 +43,17 @@
         android:divider="#d5d5d5"
         android:dividerHeight="1px"
         tools:listitem="@layout/otaadapter_groupview" />
+
+    <TextView
+        android:id="@+id/gointo_pa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/darker_gray"
+        android:gravity="center"
+        android:padding="6dp"
+        android:text="进入pa包管理"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:visibility="gone"
+        tools:visibility="visible" />
 </LinearLayout>
