@@ -195,7 +195,7 @@ public class Yodo1Activity extends AppCompatActivity {
                 OTALoginBean otaLoginBean = JsonUtils.fromJson(result, OTALoginBean.class);
                 if (otaLoginBean.isSuccess()) {
                     Yodo1SharedPreferences.put(Yodo1Activity.this, "token", otaLoginBean.getData().getToken());
-//                    Toast.makeText(Yodo1Activity.this, "登录成功,进入TeamList", Toast.LENGTH_SHORT).show();
+
                     Intent intent = new Intent(Yodo1Activity.this, Yodo1OtaApplistActivity.class);
                     intent.putExtra("logindata", otaLoginBean);
                     startActivity(intent);

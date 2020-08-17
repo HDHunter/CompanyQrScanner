@@ -2,6 +2,8 @@ package com.hunter.appinfomonitor.ui;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author talaya
@@ -55,5 +57,13 @@ public class MD5EncodeUtil {
             resultString = byteArrayToHexString(md.digest(resultString.getBytes()));
         }
         return resultString;
+    }
+
+    public static Map<String, String> paAddSign(String signKey) {
+        Map<String, String> parms = new HashMap<>();
+        String s = "" + System.currentTimeMillis();
+        parms.put("timestamp", s);
+        parms.put("sign", MD5Encode(signKey + s + "yodo1"));
+        return parms;
     }
 }

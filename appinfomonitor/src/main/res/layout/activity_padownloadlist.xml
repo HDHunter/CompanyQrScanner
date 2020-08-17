@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,32 +9,59 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#c3c3c3"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="2dp">
 
-        <Spinner
+        <TextView
             android:id="@+id/gameselect"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
+            android:background="#c3c3c3"
+            android:fontFamily="sans-serif-thin"
             android:gravity="center"
-            android:spinnerMode="dialog" />
+            android:lines="1"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:singleLine="true"
+            android:text="游戏"
+            android:textColor="#032323"
+            android:textSize="12sp"
+            app:fontFamily="sans-serif-thin" />
 
-        <Spinner
+        <TextView
             android:id="@+id/channelselect"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
             android:layout_weight="1"
+            android:background="#c3c3c3"
+            android:fontFamily="sans-serif-thin"
             android:gravity="center"
-            android:spinnerMode="dialog" />
+            android:lines="1"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:singleLine="true"
+            android:text="渠道"
+            android:textColor="#032323"
+            android:textSize="12sp" />
 
-        <Spinner
+        <TextView
             android:id="@+id/versionselect"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="#c3c3c3"
+            android:fontFamily="sans-serif-thin"
             android:gravity="center"
-            android:spinnerMode="dialog" />
+            android:lines="1"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:singleLine="true"
+            android:text="版本"
+            android:textColor="#032323"
+            android:textSize="12sp" />
     </LinearLayout>
 
     <ListView

@@ -1,6 +1,7 @@
 package com.hunter.appinfomonitor.network.okbiz;
 
 import com.hunter.appinfomonitor.MyApplication;
+import com.hunter.appinfomonitor.ui.OtaAPi;
 
 import java.io.IOException;
 
@@ -23,9 +24,15 @@ public class AllInterceptor implements Interceptor {
 
         Request.Builder builder = request.newBuilder();
         // 添加PPU;
-        String token = Yodo1SharedPreferences.getString(MyApplication.mApplication, "token");
-        builder.addHeader("Authorization", "Bearer" + " " + token)
-                .method(request.method(), request.body());
+        if (request.url().toString().contains(OtaAPi.pabase)) {
+            String token = Yodo1SharedPreferences.getString(MyApplication.mApplication, "tokenpa");
+            builder.addHeader("Authorization", "Bearer" + " " + token)
+                    .method(request.method(), request.body());
+        } else {
+            String token = Yodo1SharedPreferences.getString(MyApplication.mApplication, "token");
+            builder.addHeader("Authorization", "Bearer" + " " + token)
+                    .method(request.method(), request.body());
+        }
         request = builder.build();
         return chain.proceed(request);
     }

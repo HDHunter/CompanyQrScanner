@@ -64,6 +64,7 @@
         <activity android:name=".Yodo1QrCodeActivity" />
         <activity android:name=".yodo1page.DownloadListActivity" />
         <activity android:name=".yodo1page.PaDownloadListActivity" />
+        <activity android:name=".yodo1page.PaDownloadSelectListActivity" />
 
 
         <service

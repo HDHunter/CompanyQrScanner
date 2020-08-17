@@ -24,9 +24,9 @@ public interface OtaAPi {
 
     String gamelist = pabase + "/gameList";
 
-    String versionList = pabase + "/versionList";
+    String versionList = pabase + "/packTestPackManageModel/find/versionList";
 
-    String channelList = pabase + "/promotionChannelList";
+    String channelList = pabase + "/packTestPackManageModel/find/promotionChannelList";
 
-    String packagelist = pabase + "/packageList";
+    String packagelist = pabase + "/packTestPackManageModel/find/packageList";
 }

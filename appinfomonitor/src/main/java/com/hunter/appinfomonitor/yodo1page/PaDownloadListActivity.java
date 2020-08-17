@@ -1,23 +1,27 @@
 package com.hunter.appinfomonitor.yodo1page;
 
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
+import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hunter.appinfomonitor.R;
+import com.hunter.appinfomonitor.network.okbiz.GunqiuApi;
+import com.hunter.appinfomonitor.network.okbiz.RxResponse;
+import com.hunter.appinfomonitor.network.okbiz.RxResultHelper;
+import com.hunter.appinfomonitor.network.okbiz.Yodo1SharedPreferences;
+import com.hunter.appinfomonitor.ui.JsonUtils;
+import com.hunter.appinfomonitor.ui.MD5EncodeUtil;
+import com.hunter.appinfomonitor.ui.OtaAPi;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -25,8 +29,16 @@ import java.util.List;
  */
 public class PaDownloadListActivity extends AppCompatActivity {
 
-    private Spinner gameSelect, channelSelect, versionSelect;
-    private PaSelectAdapter gameSelectAdapter, channelSelectAdapter, versionSelectAdapter;
+    private TextView gameSelect, channelSelect, versionSelect;
+    private ListView lv;
+    private PaDownloadItemAdapter adapter;
+    private GameList mGameData;//游戏列表
+    private ChannelList mChannelData;//渠道列表
+
+    private VersionList mVersionData;//版本列表。
+    private PackageList mPackageData;//包列表。
+
+    private String selectGame, selectVersion, selectChannel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,132 +48,246 @@ public class PaDownloadListActivity extends AppCompatActivity {
         gameSelect = findViewById(R.id.gameselect);
         channelSelect = findViewById(R.id.channelselect);
         versionSelect = findViewById(R.id.versionselect);
+        lv = findViewById(R.id.pa_download_listview);
 
-        gameSelect.setPrompt("选择游戏");
-        channelSelect.setPrompt("选择渠道");
-        versionSelect.setPrompt("选择版本");
-
-        gameSelectAdapter = new PaSelectAdapter(this, 0);
-        channelSelectAdapter = new PaSelectAdapter(this, 0);
-        versionSelectAdapter = new PaSelectAdapter(this, 0);
-        gameSelect.setAdapter(gameSelectAdapter);
-        channelSelect.setAdapter(channelSelectAdapter);
-        versionSelect.setAdapter(versionSelectAdapter);
+        adapter = new PaDownloadItemAdapter(this);
+        lv.setAdapter(adapter);
 
         initData();
-        gameSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        gameSelect.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onClick(View v) {
+                Intent intent = new Intent(PaDownloadListActivity.this, PaDownloadSelectListActivity.class);
+                intent.setType("game");
 
-            }
+                ArrayList<String> lists = new ArrayList<>();
+                List<GameList.GamesBean> games = mGameData.getGames();
+                for (GameList.GamesBean gamesBean : games) {
+                    lists.add(gamesBean.getName().getCh() + " " + gamesBean.getName().getEn());
+                }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        channelSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+                intent.putExtra("data", lists);
+                intent.putExtra("hint", gameSelect.getText().toString());
+                startActivityForResult(intent, 5050);
             }
         });
-        versionSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        channelSelect.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onClick(View v) {
+                Intent intent = new Intent(PaDownloadListActivity.this, PaDownloadSelectListActivity.class);
+                intent.setType("channel");
 
-            }
+                ArrayList<String> lists = new ArrayList<>();
+                List<ChannelList.ListBean> games = mChannelData.getList();
+                for (ChannelList.ListBean gamesBean : games) {
+                    lists.add(gamesBean.getName());
+                }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+                intent.putExtra("data", lists);
+                intent.putExtra("hint", selectChannel);
+                startActivityForResult(intent, 5050);
             }
         });
+        versionSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PaDownloadListActivity.this, PaDownloadSelectListActivity.class);
+                intent.setType("version");
+
+                ArrayList<String> lists = new ArrayList<>();
+                List<VersionList.VersionsBean> games = mVersionData.getVersions();
+                for (VersionList.VersionsBean gamesBean : games) {
+                    lists.add(gamesBean.getVersion());
+                }
+
+                intent.putExtra("data", lists);
+                intent.putExtra("hint", selectVersion);
+                startActivityForResult(intent, 5050);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 5050 && resultCode == 5050) {
+            String type = data.getType();
+            if ("game".equals(type)) {
+                int position = data.getIntExtra("position", 0);
+
+                GameList.GamesBean gamesBean = mGameData.getGames().get(position);
+                selectGame = gamesBean.getAppkey();
+                gameSelect.setText(gamesBean.getName().getCh() + "-" + gamesBean.getName().getEn());
+
+                requestVersionList(selectGame);
+            } else if ("version".equals(type)) {
+                int position = data.getIntExtra("position", 0);
+
+                VersionList.VersionsBean versionsBean = mVersionData.getVersions().get(position);
+                selectVersion = versionsBean.getVersion();
+                versionSelect.setText(selectVersion);
+                requestPackageList(selectGame, selectVersion);
+            } else if ("channel".equals(type)) {
+                int position = data.getIntExtra("position", 0);
+
+                ChannelList.ListBean listBean = mChannelData.getList().get(position);
+                selectChannel = listBean.getName();
+                channelSelect.setText(selectChannel);
+
+                filterList(position);
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Yodo1SharedPreferences.put(this, "selectGame", selectGame);
+        Yodo1SharedPreferences.put(this, "selectChannel", selectChannel);
+        Yodo1SharedPreferences.put(this, "selectVersion", selectVersion);
+    }
+
+    private void filterList(int position) {
+        if (position == 0 || mPackageData == null || mPackageData.getList() == null || mPackageData.getList().isEmpty()) {
+            if (mPackageData != null && mPackageData.getList() != null) {
+                adapter.setData(mPackageData.getList());
+            } else {
+                adapter.setData(Collections.EMPTY_LIST);
+            }
+        } else {
+            List<PackageList.ListBean> list = mPackageData.getList();
+            List<PackageList.ListBean> ll = new ArrayList<>();
+            for (PackageList.ListBean bean : list) {
+                if (selectChannel.contains("所有") || TextUtils.equals(bean.getPublish_name(), selectChannel)) {
+                    ll.add(bean);
+                }
+            }
+            adapter.setData(ll);
+        }
     }
 
     private void initData() {
-        ArrayList<String> objects = new ArrayList<>();
-        objects.add("sdf");
-        objects.add("我们");
-        objects.add("你们");
-        gameSelectAdapter.setData(objects);
-        channelSelectAdapter.setData(objects);
-        versionSelectAdapter.setData(objects);
+        requestGameList();
+        requestChannelList();
+
+        selectGame = Yodo1SharedPreferences.getString(this, "selectGame");
+        selectChannel = Yodo1SharedPreferences.getString(this, "selectChannel");
+        selectVersion = Yodo1SharedPreferences.getString(this, "selectVersion");
     }
 
+    private void requestGameList() {
+        final HashMap<String, String> map = new HashMap<>();
+        map.putAll(MD5EncodeUtil.paAddSign(""));
+        GunqiuApi.getInstance().get(OtaAPi.gamelist, map).compose(RxResultHelper.<String>handleResult()).subscribe(new RxResponse<String>() {
+            @Override
+            public void onSuccess(String result) {
+                mGameData = JsonUtils.fromJson(result, GameList.class);
 
-    /**
-     * @author yodo1
-     */
-    private class PaSelectAdapter extends BaseAdapter {
-
-        private List<String> mlist;
-        private Activity context;
-        private int type;
-
-        public PaSelectAdapter(PaDownloadListActivity paDownloadListActivity, int i) {
-            context = paDownloadListActivity;
-            mlist = new ArrayList<>();
-            type = i;
-        }
-
-        @Override
-        public int getCount() {
-            return mlist.size();
-        }
-
-        @Override
-        public String getItem(int position) {
-            return mlist.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            TextView tv = null;
-            if (convertView == null) {
-                convertView = new TextView(context);
-                tv = (TextView) convertView;
-                ListView.LayoutParams lp = new ListView.LayoutParams(ListView.LayoutParams.WRAP_CONTENT, ListView.LayoutParams.MATCH_PARENT);
-                tv.setLayoutParams(lp);
-                tv.setTextSize(dip2px(context, 6));
-                tv.setTextColor(Color.BLACK);
-                tv.setGravity(Gravity.CENTER);
-                tv.setMinEms(4);
-                int i = dip2px(context, 8);
-                tv.setPadding(i, i, i, i);
-            } else {
-                tv = (TextView) convertView;
+                if (TextUtils.isEmpty(selectGame)) {
+                    GameList.GamesBean gamesBean = mGameData.getGames().get(0);
+                    selectGame = gamesBean.getAppkey();
+                    gameSelect.setText(gamesBean.getName().getCh() + "-" + gamesBean.getName().getEn());
+                } else {
+                    boolean has = false;
+                    for (GameList.GamesBean b : mGameData.getGames()) {
+                        if (TextUtils.equals(b.getAppkey(), selectGame)) {
+                            has = true;
+                            gameSelect.setText(b.getName().getCh() + "-" + b.getName().getEn());
+                            break;
+                        }
+                    }
+                    if (!has) {
+                        GameList.GamesBean gamesBean = mGameData.getGames().get(0);
+                        selectGame = gamesBean.getAppkey();
+                        gameSelect.setText(gamesBean.getName().getCh() + "-" + gamesBean.getName().getEn());
+                    }
+                }
+                requestVersionList(selectGame);
             }
-            String item = getItem(position);
-            tv.setText(item);
-            return tv;
-        }
 
-        public void setData(ArrayList<String> objects) {
-            mlist.clear();
-            mlist.addAll(objects);
-            notifyDataSetChanged();
-        }
+            @Override
+            public void onFailure(Throwable e) {
+                Toast.makeText(PaDownloadListActivity.this, "msg:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    public static int dip2px(Context context, float dpValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
+    private void requestChannelList() {
+        HashMap<String, String> map = new HashMap<>();
+        map.putAll(MD5EncodeUtil.paAddSign(""));
+        GunqiuApi.getInstance().get(OtaAPi.channelList, map).compose(RxResultHelper.<String>handleResult()).subscribe(new RxResponse<String>() {
+            @Override
+            public void onSuccess(String result) {
+                ChannelList versionList = JsonUtils.fromJson(result, ChannelList.class);
+                ChannelList.ListBean listBean = new ChannelList.ListBean();
+                listBean.setName("所有渠道");
+                versionList.getList().add(0, listBean);
+                mChannelData = versionList;
+
+                if (!TextUtils.isEmpty(selectChannel)) {
+                    channelSelect.setText(selectChannel);
+                } else {
+                    selectChannel = mChannelData.getList().get(0).getName();
+                    channelSelect.setText(selectChannel);
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                Toast.makeText(PaDownloadListActivity.this, "msg:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
+    private void requestPackageList(String gameKey, String gameVersion) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("appkey", gameKey);
+        map.put("status", "2");
+        map.put("type", "test");
+        map.put("game_version", gameVersion);
+        map.putAll(MD5EncodeUtil.paAddSign(gameKey + gameVersion + "2"));
+        GunqiuApi.getInstance().get(OtaAPi.packagelist, map).compose(RxResultHelper.<String>handleResult()).subscribe(new RxResponse<String>() {
+            @Override
+            public void onSuccess(String result) {
+                mPackageData = JsonUtils.fromJson(result, PackageList.class);
 
-    public static int px2dip(Context context, float pxValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (pxValue / scale + 0.5f);
+                filterList(1);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                Toast.makeText(PaDownloadListActivity.this, "msg:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void requestVersionList(final String appkey) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("appkey", appkey);
+        map.putAll(MD5EncodeUtil.paAddSign(appkey));
+        GunqiuApi.getInstance().get(OtaAPi.versionList, map).compose(RxResultHelper.<String>handleResult()).subscribe(new RxResponse<String>() {
+            @Override
+            public void onSuccess(String result) {
+                mVersionData = JsonUtils.fromJson(result, VersionList.class);
+
+                if (mVersionData.getVersions().isEmpty()) {
+                    Toast.makeText(PaDownloadListActivity.this, "没有打包版本。", Toast.LENGTH_SHORT).show();
+                    mPackageData = null;
+                    versionSelect.setText(null);
+                    selectVersion = null;
+                    filterList(0);
+                } else {
+                    String version = mVersionData.getVersions().get(0).getVersion();
+                    versionSelect.setText(version);
+                    selectVersion = version;
+                    requestPackageList(appkey, version);
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                Toast.makeText(PaDownloadListActivity.this, "msg:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

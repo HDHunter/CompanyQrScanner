@@ -19,12 +19,14 @@ import com.hunter.appinfomonitor.network.okbiz.RxResultHelper;
 import com.hunter.appinfomonitor.network.okbiz.Yodo1SharedPreferences;
 import com.hunter.appinfomonitor.ui.AppManager;
 import com.hunter.appinfomonitor.ui.JsonUtils;
+import com.hunter.appinfomonitor.ui.MD5EncodeUtil;
 import com.hunter.appinfomonitor.ui.OtaAPi;
 import com.hunter.appinfomonitor.yodo1bean.OTALoginBean;
 import com.hunter.appinfomonitor.yodo1bean.OtaAdapterBean;
 import com.hunter.appinfomonitor.yodo1bean.OtaAllAppListBean;
 import com.hunter.appinfomonitor.yodo1bean.OtaMemberListBean;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
@@ -90,26 +92,34 @@ public class Yodo1OtaApplistActivity extends AppCompatActivity implements Adapte
         String username = Yodo1SharedPreferences.getString(this, "username");
         String password = Yodo1SharedPreferences.getString(this, "password");
         try {
+            long l = System.currentTimeMillis();
+            String s = "" + l;
             jsonObject.put("password", password);
-            jsonObject.put("timestamp", System.currentTimeMillis());
+            jsonObject.put("timestamp", l);
             jsonObject.put("type", "ldap");
             jsonObject.put("username", username);
             jsonObject.put("loginFree", false);
-            jsonObject.put("sign", "");
+            jsonObject.put("sign", MD5EncodeUtil.MD5Encode(username + password + "falseldap" + s + "yodo1"));
         } catch (Exception e) {
             e.printStackTrace();
         }
         GunqiuApi.getInstance().post(OtaAPi.palogin, jsonObject.toString()).compose(RxResultHelper.<String>handleResult()).subscribe(new RxResponse<String>() {
             @Override
             public void onSuccess(String result) {
+                try {
+                    JSONObject jsonObject1 = new JSONObject(result);
+                    Yodo1SharedPreferences.put(Yodo1OtaApplistActivity.this, "tokenpa", jsonObject1.getString("id_token"));
 
-                Intent intent = new Intent(Yodo1OtaApplistActivity.this, PaDownloadListActivity.class);
-                startActivityForResult(intent, 1112);
+                    Intent intent = new Intent(Yodo1OtaApplistActivity.this, PaDownloadListActivity.class);
+                    startActivityForResult(intent, 1112);
+                } catch (JSONException e) {
+                    onFailure(e);
+                }
             }
 
             @Override
             public void onFailure(Throwable e) {
-
+                Toast.makeText(Yodo1OtaApplistActivity.this, "登录失败,msg:" + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
