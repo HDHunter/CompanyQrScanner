@@ -2,6 +2,8 @@ package com.hunter.appinfomonitor.ui;
 
 import android.content.pm.Signature;
 
+import com.hunter.appinfomonitor.LogUtils;
+
 import java.io.ByteArrayInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -151,12 +153,12 @@ public class SHAUtils {
 
                 String pubKey = cert.getPublicKey().toString();   //公钥
                 String signNumber = cert.getSerialNumber().toString();
-                System.out.println("signName:" + cert.getSigAlgName());//算法名
-                System.out.println("pubKey:" + pubKey);
-                System.out.println("signNumber:" + signNumber);//证书序列编号
-                System.out.println("subjectDN:" + cert.getSubjectDN().toString());
+                LogUtils.e("signName:", cert.getSigAlgName());//算法名
+                LogUtils.e("pubKey:", pubKey);
+                LogUtils.e("signNumber:", signNumber);//证书序列编号
+                LogUtils.e("subjectDN:", cert.getSubjectDN().toString());
 
-                System.out.println(cert.getNotAfter() + "--" + cert.getNotBefore());
+                LogUtils.e("after before", cert.getNotAfter() + "--" + cert.getNotBefore());
             }
         } catch (Exception e) {
         }

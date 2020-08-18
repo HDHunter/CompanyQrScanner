@@ -14,7 +14,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -27,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hunter.appinfomonitor.AdvertisingIdClient;
+import com.hunter.appinfomonitor.BaseActvity;
 import com.hunter.appinfomonitor.R;
 import com.hunter.appinfomonitor.network.okbiz.GunqiuApi;
 import com.hunter.appinfomonitor.network.okbiz.RxResponse;
@@ -45,7 +45,7 @@ import java.util.HashMap;
 /**
  * @author yodo1
  */
-public class Yodo1Activity extends AppCompatActivity {
+public class Yodo1Activity extends BaseActvity {
 
 
     private TextView tv, tv2, console, otaname, otapwd;

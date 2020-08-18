@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hunter.appinfomonitor.BaseActvity;
 import com.hunter.appinfomonitor.R;
 import com.tonyodev.fetch2.Download;
 import com.tonyodev.fetch2.Error;
@@ -29,7 +30,7 @@ import java.util.Set;
 /**
  * @author yodo1
  */
-public class DownloadListActivity extends AppCompatActivity implements FetchListener {
+public class DownloadListActivity extends BaseActvity implements FetchListener {
 
     private ListView lv;
     private DownloadAdapter adapter;
@@ -67,13 +68,13 @@ public class DownloadListActivity extends AppCompatActivity implements FetchList
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         DownloadServerice.getInstance().getFetch().addListener(this);
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         DownloadServerice.getInstance().getFetch().removeListener(this);
     }

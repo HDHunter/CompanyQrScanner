@@ -1,7 +1,6 @@
 package com.hunter.appinfomonitor;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,7 +17,7 @@ import com.hunter.appinfomonitor.ui.AppManager;
  * @author HunterZhang
  */
 @TargetApi(Build.VERSION_CODES.N)
-public class AppShortcutsActivity extends Activity {
+public class AppShortcutsActivity extends BaseActvity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

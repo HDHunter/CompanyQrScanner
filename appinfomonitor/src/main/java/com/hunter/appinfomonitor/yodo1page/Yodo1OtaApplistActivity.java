@@ -3,7 +3,6 @@ package com.hunter.appinfomonitor.yodo1page;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,6 +10,7 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hunter.appinfomonitor.BaseActvity;
 import com.hunter.appinfomonitor.LogUtils;
 import com.hunter.appinfomonitor.R;
 import com.hunter.appinfomonitor.network.okbiz.GunqiuApi;
@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * @author yodo1
  */
-public class Yodo1OtaApplistActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class Yodo1OtaApplistActivity extends BaseActvity implements AdapterView.OnItemClickListener {
 
     OTALoginBean loginBean;
     TextView content;

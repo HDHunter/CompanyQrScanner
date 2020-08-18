@@ -40,8 +40,27 @@
         android:textSize="9sp"
         tools:text="当前版本：12500" />
 
-    <com.hunter.appinfomonitor.yodo1page.DownloadButton
-        android:id="@+id/item_download_btn"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/infobtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="0dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:text="Info"
+            android:textAllCaps="false"
+            android:textSize="11sp" />
+
+        <com.hunter.appinfomonitor.yodo1page.DownloadButton
+            android:id="@+id/item_download_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
 </LinearLayout>

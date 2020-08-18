@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -35,7 +34,7 @@ import cn.bingoogolapple.qrcode.zbar.ZBarView;
 /**
  * @author yodo1
  */
-public class Yodo1QrCodeActivity extends AppCompatActivity implements QRCodeView.Delegate {
+public class Yodo1QrCodeActivity extends BaseActvity implements QRCodeView.Delegate {
 
     private ZBarView mZBarView;
     private TextView bottomdisplay;
@@ -79,13 +78,13 @@ public class Yodo1QrCodeActivity extends AppCompatActivity implements QRCodeView
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         mZBarView.startSpot(); // 开始识别
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         mZBarView.stopSpot(); // 停止识别
     }

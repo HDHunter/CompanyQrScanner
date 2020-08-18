@@ -1,8 +1,12 @@
 package com.hunter.appinfomonitor.yodo1page;
 
+import android.content.DialogInterface;
+import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.hunter.appinfomonitor.R;
@@ -47,17 +51,45 @@ public class PaDownloadItemAdapter extends BaseAdapter {
             vh.downloadlog = convertView.findViewById(R.id.item_download);
             vh.versionInfo = convertView.findViewById(R.id.item_version);
             vh.button = convertView.findViewById(R.id.item_download_btn);
+            vh.infobtn = convertView.findViewById(R.id.infobtn);
             convertView.setTag(vh);
         } else {
             vh = (VH) convertView.getTag();
         }
         PackageList.ListBean item = getItem(position);
-        vh.appname.setText("发布渠道:" + item.getPublish_name() + "       v名:" + item.getGame_version() + "       v号:" + item.getVersion_code());
-        vh.packageName.setText(item.getPackage_name() + "  创建时间:" + item.getCreate_date());
-        vh.downloadlog.setText("完成时间:" + item.getFinish_date());
-        vh.versionInfo.setText("打包用户: " + item.getUser_id());
+        vh.appname.setText("发布渠道: " + item.getPublish_name() + "       版本名称: " + item.getGame_version() + "       版本号: " + item.getVersion_code());
+        vh.packageName.setText("包名:" + item.getPackage_name() + "  创建时间:" + item.getCreate_date().substring(0, 19).replace("T", " "));
+        vh.downloadlog.setText("完成时间:" + item.getFinish_date().substring(0, 19).replace("T", " ") + "        打包用户: " + item.getUser_id());
+        vh.versionInfo.setVisibility(View.GONE);
+        vh.infobtn.setTag(item);
+        vh.infobtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PackageList.ListBean item = (PackageList.ListBean) v.getTag();
+
+                AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                dialog.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.setTitle(Uri.parse(item.getAddress()).getLastPathSegment());
+                StringBuilder sb = new StringBuilder();
+                List<PackageList.ListBean.SdkLstBean> sdk_lst = item.getSdk_lst();
+                for (PackageList.ListBean.SdkLstBean b : sdk_lst) {
+                    sb.append(b.getLabel() + " ");
+                    sb.append(b.getSdk() + " ");
+                    sb.append(b.getVersion());
+                    sb.append("\n");
+                }
+                dialog.setMessage(sb.toString());
+                dialog.create().show();
+            }
+        });
         OtaAllAppListBean.DataBean.TeamsBean.AppsBean.VersionsBean versionsBean = new OtaAllAppListBean.DataBean.TeamsBean.AppsBean.VersionsBean();
         versionsBean.setDownloadUrl(item.getAddress());
+
         versionsBean.set_id(item.get_id());
         versionsBean.setBundleId(item.getPackage_name());
         versionsBean.setVersionCode(item.getVersion_code());
@@ -81,5 +113,6 @@ public class PaDownloadItemAdapter extends BaseAdapter {
         TextView downloadlog;
         TextView versionInfo;
         DownloadButton button;
+        Button infobtn;
     }
 }

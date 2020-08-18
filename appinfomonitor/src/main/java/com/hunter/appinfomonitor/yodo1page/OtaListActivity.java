@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
+import com.hunter.appinfomonitor.BaseActvity;
 import com.hunter.appinfomonitor.R;
 import com.hunter.appinfomonitor.ui.AppManager;
 import com.hunter.appinfomonitor.yodo1bean.OTALoginBean;
@@ -16,7 +17,7 @@ import com.hunter.appinfomonitor.yodo1bean.OtaAdapterBean;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OtaListActivity extends Activity {
+public class OtaListActivity extends BaseActvity {
 
     TextView content;
     ExpandableListView listView;

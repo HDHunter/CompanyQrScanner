@@ -3,7 +3,6 @@ package com.hunter.appinfomonitor.yodo1page;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -16,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hunter.appinfomonitor.BaseActvity;
 import com.hunter.appinfomonitor.R;
 
 import java.io.Serializable;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 /**
  * @author yodo1
  */
-public class PaDownloadSelectListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class PaDownloadSelectListActivity extends BaseActvity implements AdapterView.OnItemClickListener {
 
     private EditText filterEt;
     private ListView lv;

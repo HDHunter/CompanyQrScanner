@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hunter.appinfomonitor.BaseActvity;
 import com.hunter.appinfomonitor.R;
 import com.hunter.appinfomonitor.network.okbiz.GunqiuApi;
 import com.hunter.appinfomonitor.network.okbiz.RxResponse;
@@ -27,7 +28,7 @@ import java.util.List;
 /**
  * @author yodo1
  */
-public class PaDownloadListActivity extends AppCompatActivity {
+public class PaDownloadListActivity extends BaseActvity {
 
     private TextView gameSelect, channelSelect, versionSelect;
     private ListView lv;
