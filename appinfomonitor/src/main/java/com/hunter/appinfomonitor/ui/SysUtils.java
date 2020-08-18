@@ -38,16 +38,17 @@ public class SysUtils {
         return null;
     }
 
-    public static String getSignature(Context ctx, String packageName) {
+    public static Signature[] getSignature(Context ctx, String packageName) {
         try {
             PackageManager manager = ctx.getPackageManager();
             PackageInfo packageInfo = manager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
             Signature[] signatures = packageInfo.signatures;
-            StringBuilder sb = new StringBuilder();
-            for (Signature signature : signatures) {
-                sb.append(signature.toCharsString());
-            }
-            return sb.toString();
+//            StringBuilder sb = new StringBuilder();
+//            for (Signature signature : signatures) {
+//                sb.append(signature.toCharsString());
+//            }
+//            return sb.toString();
+            return signatures;
         } catch (Exception e) {
             e.printStackTrace();
         }

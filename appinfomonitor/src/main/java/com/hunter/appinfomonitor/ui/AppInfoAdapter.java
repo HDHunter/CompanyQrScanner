@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -211,12 +212,18 @@ public class AppInfoAdapter extends RecyclerView.Adapter {
                 }
             } else if (id == R.id.sign) {
                 AppInfoModel appInfoModel = data.get(position);
-                String temp =
-                        SHAUtils.getSHA(SysUtils.getSignature(context, appInfoModel.getPackageName())).replace("-", "");
-                String singn = MD5EncodeUtil.MD5Encode(temp);
-                Toast.makeText(context, singn + "", Toast.LENGTH_LONG).show();
+                Signature[] signatures = SysUtils.getSignature(context, appInfoModel.getPackageName());
+
+                String md5 = "MD5: " + SHAUtils.signatureMD5(signatures);
+                String sha1 = "SHA1: " + SHAUtils.signatureSHA1(signatures);
+                String sha256 = "SHA256: " + SHAUtils.signatureSHA256(signatures);
+
+                Toast.makeText(context, md5 + "\n" + sha1 + "\n" + sha256, Toast.LENGTH_LONG).show();
                 Log.e("yodo1", "******************************************************************************");
-                Log.e("yodo1 sign", "yodo1_sign:  " + singn);
+                Log.e("yodo1 sign", md5);
+                Log.e("yodo1 sign", sha1);
+                Log.e("yodo1 sign", sha256);
+                SHAUtils.signatureName(signatures);
                 Log.e("yodo1", "******************************************************************************");
             } else {
                 AppInfoModel appInfoModel = data.get(position);
