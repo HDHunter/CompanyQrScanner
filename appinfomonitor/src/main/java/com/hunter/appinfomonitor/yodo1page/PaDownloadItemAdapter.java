@@ -1,6 +1,7 @@
 package com.hunter.appinfomonitor.yodo1page;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -52,6 +53,7 @@ public class PaDownloadItemAdapter extends BaseAdapter {
             vh.versionInfo = convertView.findViewById(R.id.item_version);
             vh.button = convertView.findViewById(R.id.item_download_btn);
             vh.infobtn = convertView.findViewById(R.id.infobtn);
+            vh.share = convertView.findViewById(R.id.item_itemapp_share);
             convertView.setTag(vh);
         } else {
             vh = (VH) convertView.getTag();
@@ -87,6 +89,18 @@ public class PaDownloadItemAdapter extends BaseAdapter {
                 dialog.create().show();
             }
         });
+        vh.share.setTag(item);
+        vh.share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PackageList.ListBean ch = (PackageList.ListBean) v.getTag();
+                String shareText = ch.getAddress();
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, shareText);
+                context.startActivity(Intent.createChooser(intent, "分享下载链接"));
+            }
+        });
         OtaAllAppListBean.DataBean.TeamsBean.AppsBean.VersionsBean versionsBean = new OtaAllAppListBean.DataBean.TeamsBean.AppsBean.VersionsBean();
         versionsBean.setDownloadUrl(item.getAddress());
 
@@ -108,11 +122,11 @@ public class PaDownloadItemAdapter extends BaseAdapter {
 
 
     static class VH {
-        TextView appname;
+        TextView appname,share;
         TextView packageName;
         TextView downloadlog;
         TextView versionInfo;
         DownloadButton button;
-        Button infobtn;
+        TextView infobtn;
     }
 }

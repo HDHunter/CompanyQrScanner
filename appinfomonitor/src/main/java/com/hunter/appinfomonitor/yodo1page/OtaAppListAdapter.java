@@ -1,5 +1,6 @@
 package com.hunter.appinfomonitor.yodo1page;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.text.TextUtils;
 import android.text.format.Formatter;
@@ -95,6 +96,7 @@ public class OtaAppListAdapter extends BaseExpandableListAdapter {
             vh.versionInfo = convertView.findViewById(R.id.item_version);
             vh.downloadCount = convertView.findViewById(R.id.item_download);
             vh.download = convertView.findViewById(R.id.item_download_btn);
+            vh.share = convertView.findViewById(R.id.item_itemapp_share);
             convertView.setTag(vh);
         } else {
             vh = (VH) convertView.getTag();
@@ -113,10 +115,19 @@ public class OtaAppListAdapter extends BaseExpandableListAdapter {
         } else {
             vh.versionInfo.setVisibility(View.GONE);
         }
+        vh.share.setTag(child);
+        vh.share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OtaAllAppListBean.DataBean.TeamsBean.AppsBean.VersionsBean ch = (OtaAllAppListBean.DataBean.TeamsBean.AppsBean.VersionsBean) v.getTag();
+                String shareText = ch.getDownloadUrl();
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, shareText);
+                mActivity.startActivity(Intent.createChooser(intent, "分享下载链接"));
+            }
+        });
         vh.download.setData(child);
-//        vh.packageName.setText(group.getBundleId());
-//        vh.downloadCount.setText("下载量:" + group.getTotalDownloadCount() + " 今日下载:" + group.getTodayDownloadCount().getCount());
-//        vh.versionInfo.setText("当前版本号:" + group.getCurrentVersion() + "  创建者:" + group.getCreator());
         return convertView;
     }
 
@@ -127,7 +138,7 @@ public class OtaAppListAdapter extends BaseExpandableListAdapter {
 
     class VH {
         ImageView icon;
-        TextView appName, versionInfo, packageName, downloadCount;
+        TextView appName, versionInfo, packageName, downloadCount, share;
         DownloadButton download;
     }
 }
