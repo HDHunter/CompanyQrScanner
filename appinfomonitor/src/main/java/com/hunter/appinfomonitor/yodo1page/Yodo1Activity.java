@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -48,7 +49,7 @@ import java.util.HashMap;
 public class Yodo1Activity extends BaseActvity {
 
 
-    private TextView tv, tv2, console, otaname, otapwd;
+    private TextView tv, tv2hint, tv2, console, otaname, otapwd;
     private ProgressDialog progressDialog;
     private EditText input;
     private AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
@@ -66,12 +67,19 @@ public class Yodo1Activity extends BaseActvity {
                     Yodo1Activity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(Yodo1Activity.this, "gms not found.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Yodo1Activity.this, "gms bind exception.google服务连接异常", Toast.LENGTH_SHORT).show();
                         }
                     });
                 } finally {
                     Yodo1Activity.this.unbindService(connection);
                 }
+            } else {
+                Yodo1Activity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(Yodo1Activity.this, "gms not found.手机没有google服务", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
             return "";
         }
@@ -79,9 +87,17 @@ public class Yodo1Activity extends BaseActvity {
         @Override
         protected void onPostExecute(String advertId) {
             if (!TextUtils.isEmpty(advertId)) {
+                tv2hint.setText(Html.fromHtml("Device ID(googleAdId/<del>IMEI</del>)"));
                 tv.setText(advertId);
             } else {
-                tv.setText(getIMEI(Yodo1Activity.this));
+                String imei = getIMEI(Yodo1Activity.this);
+                if (!TextUtils.isEmpty(imei)) {
+                    tv2hint.setText(Html.fromHtml("Device ID(<del>googleAdId</del>/IMEI)"));
+                    tv.setText(imei);
+                }else{
+                    tv2hint.setText(Html.fromHtml("Device ID(googleAdId/IMEI)"));
+                    tv.setText(imei);
+                }
             }
         }
 
@@ -94,6 +110,7 @@ public class Yodo1Activity extends BaseActvity {
         final ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         tv = findViewById(R.id.device_id);
         tv2 = findViewById(R.id.device_model_id);
+        tv2hint = findViewById(R.id.device_name);
         otaname = findViewById(R.id.otaname);
         otapwd = findViewById(R.id.otapwd);
         task.execute();
