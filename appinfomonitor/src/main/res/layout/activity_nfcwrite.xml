@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/ndf_writebody"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:text="写入的message:"
+        android:textSize="11sp"
+        android:textColor="#131313"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/content_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="NFC Content" />
+
+    <Button
+        android:id="@+id/write_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="42dp"
+        android:text="write NFC Tag"
+        android:textAllCaps="false"
+        android:textSize="13sp" />
+
+
+</LinearLayout>

@@ -20,6 +20,11 @@ public class SPHelper {
         return sp.getBoolean("has_qs_tile_added", false);
     }
 
+    public static String getNFCList(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getString("nfc", "");
+    }
+
     public static void setQSTileAdded(Context context, boolean added) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putBoolean("has_qs_tile_added", added).commit();
@@ -36,5 +41,10 @@ public class SPHelper {
     public static void setNotificationToggleEnabled(Context context, boolean isEnabled) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putBoolean("is_noti_toggle_enabled", isEnabled).commit();
+    }
+
+    public static void saveString(String key, String s, Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putString(key, s).commit();
     }
 }

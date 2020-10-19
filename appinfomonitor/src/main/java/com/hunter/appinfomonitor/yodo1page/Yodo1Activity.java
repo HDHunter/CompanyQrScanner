@@ -87,12 +87,12 @@ public class Yodo1Activity extends BaseActvity {
         @Override
         protected void onPostExecute(String advertId) {
             if (!TextUtils.isEmpty(advertId)) {
-                tv2hint.setText(Html.fromHtml("Device ID(googleAdId/<del>IMEI</del>)"));
+                tv2hint.setText(Html.fromHtml("Device ID(googleAdId)"));
                 tv.setText(advertId);
             } else {
                 String imei = getIMEI(Yodo1Activity.this);
                 if (!TextUtils.isEmpty(imei)) {
-                    tv2hint.setText(Html.fromHtml("Device ID(<del>googleAdId</del>/IMEI)"));
+                    tv2hint.setText(Html.fromHtml("Device ID(IMEI,GMS不可用)"));
                     tv.setText(imei);
                 }else{
                     tv2hint.setText(Html.fromHtml("Device ID(googleAdId/IMEI)"));

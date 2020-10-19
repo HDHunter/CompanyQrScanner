@@ -11,6 +11,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -55,12 +57,78 @@ import java.util.List;
 
 public class MainActivity extends BaseActvity {
 
-    private AppInfoAdapter adapter;
     public static final String ACTION_STATE_CHANGED = BuildConfig.APPLICATION_ID + ".ACTION_STATE_CHANGED";
     public static final String EXTRA_FROM_QS_TILE = "from_qs_tile";
-    private UpdateSwitchReceiver mReceiver;
     private static boolean openfloat = true;
+    private AppInfoAdapter adapter;
+    private UpdateSwitchReceiver mReceiver;
     private TextView info;
+
+    public static boolean hasNfc(Context context) {
+        boolean bRet = false;
+        if (context == null)
+            return bRet;
+        NfcManager manager = (NfcManager) context.getSystemService(Context.NFC_SERVICE);
+        if (manager == null) {
+            return false;
+        }
+        NfcAdapter adapter = manager.getDefaultAdapter();
+        if (adapter != null && adapter.isEnabled()) {
+            // adapter存在，能启用
+            bRet = true;
+        }
+        return bRet;
+    }
+
+    /**
+     * 从SD卡上读取文件内容
+     *
+     * @param fileName fileName
+     * @return content
+     */
+    public static String readFilesFromSDCard(String fileName) {
+
+        // 定义文件内容字符串
+        String content = null;
+        // 文件输入流
+        FileInputStream fileInputStream;
+
+        // 判断SD卡是否存在，并且本程序是否拥有SD卡的权限
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+
+            // 获得SD卡的根目录
+            File sdCardPath = Environment.getExternalStorageDirectory();
+            /*
+             * 文件输出操作
+             * */
+            try {
+                File testFile = new File(sdCardPath, fileName);
+                // 打开文件输入流
+                fileInputStream = new FileInputStream(testFile);
+                // 将文件输入流存放在ByteArrayOutputStream
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                // 定义每次读取一个字节
+                byte[] buffer = new byte[1024];
+                // 定义每次读取的字节长度
+                int len;
+                // 读取文件输入流的内容，并存入ByteArrayOutputStream中
+                while ((len = fileInputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, len);
+                }
+                // 将文件输入流数据以字符串的形式存放
+                content = outputStream.toString();
+                // 关闭文件输入流
+                fileInputStream.close();
+                // 关闭ByteArrayOutputStream
+                outputStream.close();
+            } catch (Exception e) {
+                Log.e("yodo1 appInfo", "yodo1 缺少SD卡权限  读取文件失败");
+            }
+        }
+
+        // 返回文件内容
+        return content;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -371,6 +439,22 @@ public class MainActivity extends BaseActvity {
                 }
             }
         });
+        findViewById(R.id.gotoyodo3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (hasNfc(v.getContext())) {
+                    String[] perms = {Manifest.permission.CAMERA, Manifest.permission.NFC};
+                    if (ContextCompat.checkSelfPermission(MainActivity.this, perms[0]) == PackageManager.PERMISSION_GRANTED &&
+                            ContextCompat.checkSelfPermission(MainActivity.this, perms[0]) == PackageManager.PERMISSION_GRANTED) {
+                        startActivity(new Intent(MainActivity.this, NFCActivity.class));
+                    } else {
+                        ActivityCompat.requestPermissions(MainActivity.this, perms, 111);
+                    }
+                } else {
+                    Toast.makeText(v.getContext(), "手机不支持NFC功能", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(new Intent(this, DownloadServerice.class));
@@ -456,15 +540,6 @@ public class MainActivity extends BaseActvity {
         return sb.toString();
     }
 
-
-    class UpdateSwitchReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            refreshWindowSwitch();
-            refreshNotificationSwitch();
-        }
-    }
-
     private void refreshWindowSwitch() {
 //        mWindowSwitch.setChecked(SPHelper.isShowWindow(this));
 //        if (getResources().getBoolean(R.bool.use_accessibility_service)) {
@@ -511,53 +586,11 @@ public class MainActivity extends BaseActvity {
         }
     }
 
-    /**
-     * 从SD卡上读取文件内容
-     *
-     * @param fileName fileName
-     * @return content
-     */
-    public static String readFilesFromSDCard(String fileName) {
-
-        // 定义文件内容字符串
-        String content = null;
-        // 文件输入流
-        FileInputStream fileInputStream;
-
-        // 判断SD卡是否存在，并且本程序是否拥有SD卡的权限
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-
-            // 获得SD卡的根目录
-            File sdCardPath = Environment.getExternalStorageDirectory();
-            /*
-             * 文件输出操作
-             * */
-            try {
-                File testFile = new File(sdCardPath, fileName);
-                // 打开文件输入流
-                fileInputStream = new FileInputStream(testFile);
-                // 将文件输入流存放在ByteArrayOutputStream
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                // 定义每次读取一个字节
-                byte[] buffer = new byte[1024];
-                // 定义每次读取的字节长度
-                int len;
-                // 读取文件输入流的内容，并存入ByteArrayOutputStream中
-                while ((len = fileInputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, len);
-                }
-                // 将文件输入流数据以字符串的形式存放
-                content = outputStream.toString();
-                // 关闭文件输入流
-                fileInputStream.close();
-                // 关闭ByteArrayOutputStream
-                outputStream.close();
-            } catch (Exception e) {
-                Log.e("yodo1 appInfo", "yodo1 缺少SD卡权限  读取文件失败");
-            }
+    class UpdateSwitchReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            refreshWindowSwitch();
+            refreshNotificationSwitch();
         }
-
-        // 返回文件内容
-        return content;
     }
 }
