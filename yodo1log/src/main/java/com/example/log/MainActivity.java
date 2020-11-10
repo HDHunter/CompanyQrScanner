@@ -170,9 +170,9 @@ public class MainActivity extends AppCompatActivity {
                                 fileOutputStream.flush();
                                 fileOutputStream.close();
                             } catch (FileNotFoundException e) {
-                                Log.d("zzzzz", "yodo1 缺少SD卡权限  读取文件失败");
+                                Log.d("zzzzz", "yodo1 缺少SD卡权限  读取文件失败", e);
                             } catch (Exception e) {
-                                Log.d("zzzzzz", "yodo1 缺少SD卡权限  读取文件失败");
+                                Log.d("zzzzzz", "yodo1 缺少SD卡权限  读取文件失败", e);
 
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1000);

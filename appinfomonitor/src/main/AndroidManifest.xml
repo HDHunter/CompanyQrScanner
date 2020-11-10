@@ -30,6 +30,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
+        android:requestLegacyExternalStorage="true"
+        android:requiredForAllUsers="true"
         android:resizeableActivity="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
