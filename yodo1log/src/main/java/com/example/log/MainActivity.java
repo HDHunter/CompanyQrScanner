@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     }
-                    String s = str.contains("openYodo1Log") ? "全局debugLog标记成功" : "全局debugLog标记开启失败";
+                    String s = (str != null && str.contains("openYodo1Log")) ? "全局debugLog标记成功" : "全局debugLog标记开启失败";
                     Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
                 }
             }
