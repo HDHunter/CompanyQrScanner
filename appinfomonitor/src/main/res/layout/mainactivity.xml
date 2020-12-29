@@ -159,11 +159,13 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="#280000f0" />
+
             <View
                 android:id="@+id/gotoyodo3"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="#2800f000" />
+
             <View
                 android:id="@+id/gotoyodo2"
                 android:layout_width="50dp"

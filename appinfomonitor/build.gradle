@@ -6,10 +6,10 @@ android {
 
     defaultConfig {
         applicationId "com.hunter.appinfomonitor"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 30
-        versionCode 20201108
-        versionName "20201108"
+        versionCode 20201229
+        versionName "20201229"
     }
 
     signingConfigs {
@@ -37,10 +37,15 @@ android {
     lintOptions {
         abortOnError false
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:design:28.0.0'
@@ -77,8 +82,4 @@ dependencies {
     implementation 'com.umeng.umsdk:game:9.1.0+G' // 游戏统计SDK依赖(可选)
     implementation 'com.umeng.umsdk:asms:1.1.3' // asms包依赖(必选)
     implementation 'com.umeng.umsdk:crash:0.0.4' // native crash包依赖(必选)
-    implementation 'com.umeng.umsdk:oaid_lenovo:1.0.0' // (可选)
-    implementation 'com.umeng.umsdk:oaid_mi:1.0.0' // (可选)
-    implementation 'com.umeng.umsdk:oaid_oppo:1.0.4' // (可选)
-    implementation 'com.umeng.umsdk:oaid_vivo:1.0.0.1' // (可选)
 }

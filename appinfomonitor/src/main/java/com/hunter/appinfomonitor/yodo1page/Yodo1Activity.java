@@ -15,7 +15,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -36,6 +35,7 @@ import com.hunter.appinfomonitor.network.okbiz.Yodo1SharedPreferences;
 import com.hunter.appinfomonitor.ui.AppManager;
 import com.hunter.appinfomonitor.ui.JsonUtils;
 import com.hunter.appinfomonitor.ui.OtaAPi;
+import com.hunter.appinfomonitor.yodo1bean.DemoHelper;
 import com.hunter.appinfomonitor.yodo1bean.OTALoginBean;
 
 import org.json.JSONException;
@@ -49,10 +49,11 @@ import java.util.HashMap;
 public class Yodo1Activity extends BaseActvity {
 
 
-    private TextView tv, tv2hint, tv2, console, otaname, otapwd;
+    private TextView deviceIdImeiValue, deviceIdImeiName, deviceModleValue, console, otaname, otapwd;
     private ProgressDialog progressDialog;
+    private TextView deviceIdGaidName, deviceIdGaidValue, deviceIdOaidName, deviceIdOaidValue;
     private EditText input;
-    private AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
+    private AsyncTask<Void, Void, String> taskGaid = new AsyncTask<Void, Void, String>() {
         @Override
         protected String doInBackground(Void... params) {
             AdvertisingIdClient.AdvertisingConnection connection = new AdvertisingIdClient.AdvertisingConnection();
@@ -87,18 +88,22 @@ public class Yodo1Activity extends BaseActvity {
         @Override
         protected void onPostExecute(String advertId) {
             if (!TextUtils.isEmpty(advertId)) {
-                tv2hint.setText(Html.fromHtml("Device ID(googleAdId)"));
-                tv.setText(advertId);
+                deviceIdGaidValue.setText(advertId);
             } else {
-                String imei = getIMEI(Yodo1Activity.this);
-                if (!TextUtils.isEmpty(imei)) {
-                    tv2hint.setText(Html.fromHtml("Device ID(IMEI,GMS不可用)"));
-                    tv.setText(imei);
-                }else{
-                    tv2hint.setText(Html.fromHtml("Device ID(googleAdId/IMEI)"));
-                    tv.setText(imei);
-                }
+                deviceIdGaidValue.setText(null);
+                deviceIdGaidValue.setHint("无法获取");
             }
+        }
+
+    };
+    private AsyncTask<Void, Void, String> taskOaid = new AsyncTask<Void, Void, String>() {
+        @Override
+        protected String doInBackground(Void... params) {
+            return "";
+        }
+
+        @Override
+        protected void onPostExecute(String advertId) {
         }
 
     };
@@ -108,19 +113,53 @@ public class Yodo1Activity extends BaseActvity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.yodo1activity);
         final ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        tv = findViewById(R.id.device_id);
-        tv2 = findViewById(R.id.device_model_id);
-        tv2hint = findViewById(R.id.device_name);
+        deviceIdImeiValue = findViewById(R.id.device_id);
+        deviceModleValue = findViewById(R.id.device_model_id);
+        deviceIdImeiName = findViewById(R.id.device_name);
+        deviceIdGaidName = findViewById(R.id.device_name2);
+        deviceIdOaidName = findViewById(R.id.device_name3);
+        deviceIdOaidValue = findViewById(R.id.deviceid3);
+        deviceIdGaidValue = findViewById(R.id.deviceid2);
         otaname = findViewById(R.id.otaname);
         otapwd = findViewById(R.id.otapwd);
-        task.execute();
-        tv2.setText(android.os.Build.MODEL);
+        taskGaid.execute();
+        taskOaid.execute();
+        deviceModleValue.setText(android.os.Build.MODEL);
+        deviceModleValue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClipData mClipData = ClipData.newPlainText("Label", deviceModleValue.getText());
+                cm.setPrimaryClip(mClipData);
+                Toast.makeText(Yodo1Activity.this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+                hideInput();
+            }
+        });
         console = findViewById(R.id.console);
         findViewById(R.id.copymas).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 requestImi();
-                ClipData mClipData = ClipData.newPlainText("Label", tv.getText());
+                ClipData mClipData = ClipData.newPlainText("Label", deviceIdGaidValue.getText());
+                cm.setPrimaryClip(mClipData);
+                Toast.makeText(Yodo1Activity.this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+                hideInput();
+            }
+        });
+        findViewById(R.id.copydevicei3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestImi();
+                ClipData mClipData = ClipData.newPlainText("Label", deviceIdOaidValue.getText());
+                cm.setPrimaryClip(mClipData);
+                Toast.makeText(Yodo1Activity.this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+                hideInput();
+            }
+        });
+        findViewById(R.id.copydeviceid).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestImi();
+                ClipData mClipData = ClipData.newPlainText("Label", deviceIdImeiValue.getText());
                 cm.setPrimaryClip(mClipData);
                 Toast.makeText(Yodo1Activity.this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
                 hideInput();
@@ -257,27 +296,50 @@ public class Yodo1Activity extends BaseActvity {
     }
 
     private void requestImi() {
-        if (TextUtils.isEmpty(tv.getText())) {
+        if (TextUtils.isEmpty(deviceIdImeiValue.getText())) {
             ActivityCompat.requestPermissions(Yodo1Activity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 44);
         }
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        deviceIdImeiValue.setText(null);
+        String imei = getIMEI(Yodo1Activity.this);
+        if (!TextUtils.isEmpty(imei)) {
+            deviceIdImeiValue.setText(imei);
+        }
+        new DemoHelper(new DemoHelper.AppIdsUpdater() {
+            @Override
+            public void OnIdsAvalid(@NonNull String ids) {
+                deviceIdOaidValue.setText(ids);
+            }
+        }).getDeviceIds(Yodo1Activity.this);
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (task != null) {
-            task.execute();
+        if (taskGaid != null) {
+            taskGaid.execute();
+        }
+        if (taskOaid != null) {
+            taskOaid.execute();
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (task != null && !task.isCancelled()) {
-            task.cancel(true);
+        if (taskGaid != null && !taskGaid.isCancelled()) {
+            taskGaid.cancel(true);
+        }
+        if (taskOaid != null && !taskOaid.isCancelled()) {
+            taskOaid.cancel(true);
         }
         AppManager.getAppManager().removeActivity(this);
-        task = null;
+        taskGaid = null;
+        taskOaid = null;
     }
 
     private String getIMEI(Context context) {

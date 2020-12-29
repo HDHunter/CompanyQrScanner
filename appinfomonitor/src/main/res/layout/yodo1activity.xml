@@ -1,193 +1,267 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="8dp"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:id="@+id/ota_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/ota"
-        app:srcCompat="@drawable/ota" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:focusable="false"
+
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/ota_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ota"
+            app:srcCompat="@drawable/ota" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/otaname"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="OTA loginName"
-                android:textColor="#808080"
-                android:textSize="14sp" />
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/otaname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="OTA loginName"
+                    android:textColor="#808080"
+                    android:textSize="14sp" />
 
 
-            <EditText
-                android:id="@+id/otapwd"
-                android:layout_width="match_parent"
+                <EditText
+                    android:id="@+id/otapwd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:hint="OTA loginPassword"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:hint="OTA loginPassword"
-                android:textColor="#000000"
-                android:textSize="14sp" />
+                android:orientation="vertical">
+
+
+                <Button
+                    android:id="@+id/ota_login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="login"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/ota_downloadm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selectdown"
+                    android:minHeight="0dp"
+                    android:text="下载管理"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/holo_orange_dark"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
-        <LinearLayout
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/mas_logo"
+            app:srcCompat="@drawable/mas_logo" />
+
+        <TextView
+            android:id="@+id/device_model_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Device Model"
+            android:textColor="#808080"
+            android:textSize="14sp" />
+
+
+        <TextView
+            android:id="@+id/device_model_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-
-            <Button
-                android:id="@+id/ota_login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="login"
-                android:textAllCaps="false" />
-
-            <Button
-                android:id="@+id/ota_downloadm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/selectdown"
-                android:minHeight="0dp"
-                android:text="下载管理"
-                android:textAllCaps="false"
-                android:textColor="@android:color/holo_orange_dark"
-                android:textSize="11sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
-
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/mas_logo"
-        app:srcCompat="@drawable/mas_logo" />
-
-    <TextView
-        android:id="@+id/device_model_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Device Model"
-        android:textColor="#808080"
-        android:textSize="14sp" />
-
-
-    <TextView
-        android:id="@+id/device_model_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:text="Hello World!"
-        android:textColor="#000000"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/device_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Device ID(googleAdId/IMEI)"
-        android:textColor="#808080"
-        android:textSize="14sp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/device_id"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="Hello World!"
             android:textColor="#000000"
             android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/copymas"
+        <TextView
+            android:id="@+id/device_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:text="Copy"
-            android:textAllCaps="false" />
-    </LinearLayout>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_marginTop="10dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/opp"
-        app:srcCompat="@drawable/opp" />
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="删除实名信息:"
-        android:textColor="#808080"
-        android:textSize="14sp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/yid"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:hint="请输入yid（yodo1 userId）"
-            android:imeOptions="actionGo"
-            android:inputType="text"
-            android:text=""
-            android:textColor="#000000"
+            android:text="Device ID(IMEI)"
+            android:textColor="#808080"
             android:textSize="14sp" />
 
-        <Button
-            android:id="@+id/request"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/device_id"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="Hello World!"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/copymas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:text="Copy"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/device_name2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:text="Go"
-            android:textAllCaps="false" />
-    </LinearLayout>
+            android:text="Device ID(GAID)"
+            android:textColor="#808080"
+            android:textSize="14sp" />
 
-    <TextView
-        android:id="@+id/console"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#dedede"
-        android:isScrollContainer="true"
-        android:lines="4"
-        android:textIsSelectable="true" />
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/deviceid2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="Hello World!"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/copydeviceid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:text="Copy"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/device_name3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Device ID(OAID)"
+            android:textColor="#808080"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/deviceid3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="Hello World!"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/copydevicei3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:text="Copy"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_marginTop="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/opp"
+            app:srcCompat="@drawable/opp" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="删除实名信息:"
+            android:textColor="#808080"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/yid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:hint="请输入yid（yodo1 userId）"
+                android:imeOptions="actionGo"
+                android:inputType="text"
+                android:text=""
+                android:textColor="#000000"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/request"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:text="Go"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/console"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#dedede"
+            android:isScrollContainer="true"
+            android:lines="4"
+            android:textIsSelectable="true" />
+    </LinearLayout>
+</ScrollView>

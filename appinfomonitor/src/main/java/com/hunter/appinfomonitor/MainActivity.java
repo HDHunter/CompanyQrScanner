@@ -439,7 +439,8 @@ public class MainActivity extends BaseActvity {
                 }
             }
         });
-        findViewById(R.id.gotoyodo3).setOnClickListener(new View.OnClickListener() {
+        View nfc = findViewById(R.id.gotoyodo3);
+        nfc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (hasNfc(v.getContext())) {
@@ -455,7 +456,7 @@ public class MainActivity extends BaseActvity {
                 }
             }
         });
-
+        nfc.setVisibility(View.GONE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(new Intent(this, DownloadServerice.class));
         } else {
