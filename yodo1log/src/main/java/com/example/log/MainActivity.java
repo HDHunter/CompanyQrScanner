@@ -3,10 +3,12 @@ package com.example.log;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -69,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        LogUtils.e("onCreate:  " + this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -185,5 +188,61 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        LogUtils.e("onResume:  " + this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        LogUtils.e("onStop:  " + this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        LogUtils.e("onPause:  " + this);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        LogUtils.e("onRestart:  " + this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        LogUtils.e("onDestroy:  " + this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        LogUtils.e("onActivityResult:  " + this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        LogUtils.e("onStart:  " + this);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        LogUtils.e("onNewIntent:  " + this);
     }
 }
