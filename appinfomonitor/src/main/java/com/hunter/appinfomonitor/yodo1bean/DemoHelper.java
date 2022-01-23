@@ -23,7 +23,6 @@ public class DemoHelper implements IIdentifierListener {
     }
 
     public void getDeviceIds(Context cxt) {
-
         long timeb = System.currentTimeMillis();
         // 方法调用
         int nres = CallFromReflect(cxt);
@@ -42,7 +41,6 @@ public class DemoHelper implements IIdentifierListener {
 
         }
         Log.d(getClass().getSimpleName(), "return value: " + String.valueOf(nres));
-
     }
 
     /*
