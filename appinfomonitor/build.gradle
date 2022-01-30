@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    compileSdkVersion 29
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.hunter.appinfomonitor"
         minSdkVersion 21
-        targetSdkVersion 30
-        versionCode 20201229
-        versionName "20201229"
+        targetSdkVersion 29
+        versionCode 20220130
+        versionName "20220130"
     }
 
     signingConfigs {
@@ -40,6 +40,17 @@ android {
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs']
+        }
+    }
+
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            if ("release".equals(variant.name)) {
+                outputFileName = 'appinfomonitor.apk'
+            } else {
+                outputFileName = 'appinfomonitor_debug.apk'
+            }
         }
     }
 }

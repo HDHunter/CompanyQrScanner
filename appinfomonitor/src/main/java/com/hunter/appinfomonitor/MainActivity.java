@@ -49,7 +49,6 @@ import com.hunter.appinfomonitor.yodo1page.Yodo1Activity;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -285,6 +284,10 @@ public class MainActivity extends BaseActvity {
                     ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 55);
                     return;
                 }
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//                    Toast.makeText(MainActivity.this, "Android11及之上无法开启日志", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
                 // 定义文件内容字符串
                 boolean isDebugLogEnabled = false;
                 String adsFlag = ".yodo1ads";
@@ -312,19 +315,21 @@ public class MainActivity extends BaseActvity {
                             fileOutputStream.write(str.getBytes());
                             fileOutputStream.flush();
                             fileOutputStream.close();
-                        } catch (FileNotFoundException e) {
-                            Log.d("zzzzz", "yodo1 缺少SD卡权限  读取文件失败");
                         } catch (Exception e) {
                             Log.d("zzzzzz", "yodo1 缺少SD卡权限  读取文件失败");
-
+                            e.printStackTrace();
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1000);
                             }
                         }
                     }
                 }
-                String s = str.contains("openYodo1Log") ? "全局debugLog标记成功" : "全局debugLog标记开启失败";
-                Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
+                if (!TextUtils.isEmpty(str)) {
+                    String s = str.contains("openYodo1Log") ? "全局debugLog标记成功" : "全局debugLog标记开启失败";
+                    Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "全局debugLog标记开启失败", Toast.LENGTH_LONG).show();
+                }
             }
         });
         //系统信息
