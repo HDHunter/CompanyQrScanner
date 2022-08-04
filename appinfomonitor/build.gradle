@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.hunter.appinfomonitor"
         minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 20220130
-        versionName "20220130"
+        targetSdkVersion 30
+        versionCode 20220804
+        versionName "20220804"
     }
 
     signingConfigs {

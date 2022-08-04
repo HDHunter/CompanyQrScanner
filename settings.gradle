@@ -1,3 +1,4 @@
-include ':yodo1log'//include ':zxingscanner'
+//include ':yodo1log'
+//include ':zxingscanner'
 //include ':app'
 include ':appinfomonitor'
