@@ -56,8 +56,16 @@ public class BJCodeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bjcode);
 
+        String system = DeviceUtils.getDeviceBrand().toLowerCase();
+        Log.e(TAG, "zzzzzzz:" + system);
+        if (system.contains("oppo")) {
+            setContentView(R.layout.activity_bjcode);
+        } else if (system.contains("mi")) {
+            setContentView(R.layout.activity_bjcodexiaomi);
+        } else {
+            setContentView(R.layout.activity_bjcodexiaomi);
+        }
         Window window = getWindow();
         window.setStatusBarColor(Color.parseColor("#f02967FF"));
 
@@ -83,7 +91,15 @@ public class BJCodeActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(id) && id.length() == 4) {
             String preId = id.substring(0, 2);
             String afterId = id.substring(2);
-            scan_id.setText(preId + "                             " + afterId);
+
+            if (system.contains("oppo")) {
+                scan_id.setText(preId + "                             " + afterId);
+            } else if (system.contains("mi")) {
+                scan_id.setText(preId + "                        " + afterId);
+            } else {
+                scan_id.setText(preId + "                             " + afterId);
+            }
+
         } else {
             scan_id.setText("");
         }
