@@ -1,5 +1,5 @@
 //include ':yodo1log'
 //include ':zxingscanner'
 //include ':app'
-include ':appinfomonitor'
+//include ':appinfomonitor'
 include ':bjhealthcode'
