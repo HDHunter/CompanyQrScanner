@@ -97,7 +97,7 @@ public class BJCodeActivity extends AppCompatActivity {
             } else if (system.contains("mi")) {
                 scan_id.setText(preId + "                        " + afterId);
             } else {
-                scan_id.setText(preId + "                            " + afterId);
+                scan_id.setText(preId + "                          " + afterId);
             }
 
         } else {

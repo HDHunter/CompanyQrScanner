@@ -34,7 +34,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="392dp"
+        android:layout_height="395dp"
         android:paddingBottom="180dp">
 
         <ImageView
@@ -74,7 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:paddingTop="10dp"
+            android:paddingTop="11dp"
             android:text="34                             18"
             android:textColor="#000000"
             android:textSize="14sp" />
