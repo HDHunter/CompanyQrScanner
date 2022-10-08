@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bjbg"
+    android:fitsSystemWindows="false"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="70dp">
+
+        <TextView
+            android:id="@+id/bj_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="2022年10月08日"
+            android:textColor="#474747"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/bj_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="12:58:48"
+            android:textColor="#474747"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:paddingBottom="180dp">
+
+        <ImageView
+            android:id="@+id/photo_bg"
+            android:layout_width="205dp"
+            android:layout_height="205dp"
+            android:layout_gravity="center"
+            android:src="@drawable/photobg1" />
+
+        <ImageView
+            android:id="@+id/photo"
+            android:layout_width="205dp"
+            android:layout_height="205dp"
+            android:layout_gravity="center"
+            android:padding="12dp"
+            tools:src="@color/black" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingRight="38dp">
+
+        <TextView
+            android:id="@+id/scan_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="张*"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/scan_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingTop="14dp"
+            android:text="34                             18"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/scan_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingTop="10dp"
+            android:text="10-08 12:58"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/scan_expire_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingTop="10dp"
+            android:text="10-08 24:00"
+            android:textColor="#B2002A"
+            android:textSize="14sp" />
+    </LinearLayout>
+</LinearLayout>

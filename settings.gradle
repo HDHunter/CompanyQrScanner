@@ -2,3 +2,4 @@
 //include ':zxingscanner'
 //include ':app'
 include ':appinfomonitor'
+include ':bjhealthcode'
