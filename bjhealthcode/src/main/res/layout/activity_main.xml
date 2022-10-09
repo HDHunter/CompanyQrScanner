@@ -9,15 +9,24 @@
 
     <Button
         android:id="@+id/enterButton"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="fake button"
+        android:text="核酸自查"
         android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/enterButton2"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="进门扫码"
+        android:textAllCaps="false" />
+
     <Button
         android:id="@+id/editorButton"
-        android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:text="编辑资料"
         android:textAllCaps="false" />
 

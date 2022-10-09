@@ -184,8 +184,7 @@ public class BJCodeActivity extends AppCompatActivity {
             Log.i(TAG, "文件时长: " + media.getDuration());
 
             String path = media.getAvailablePath();
-            RequestOptions options = new RequestOptions()
-                    .bitmapTransform(new RoundedCorners(DipPx.dip2px(this, 8)));
+            RequestOptions options = RequestOptions.bitmapTransform(new RoundedCorners(DipPx.dip2px(this, 8)));
 
 //            PictureMimeType.isContent(path) && !media.isCut() && !media.isCompressed() ? Uri.parse(path)
 //                    : path;
@@ -226,8 +225,13 @@ public class BJCodeActivity extends AppCompatActivity {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                date.setTime(System.currentTimeMillis());
-                bj_time.setText(sdf1.format(date));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        date.setTime(System.currentTimeMillis());
+                        bj_time.setText(sdf1.format(date));
+                    }
+                });
             }
         }, 200, 1000);
         timer.scheduleAtFixedRate(new TimerTask() {

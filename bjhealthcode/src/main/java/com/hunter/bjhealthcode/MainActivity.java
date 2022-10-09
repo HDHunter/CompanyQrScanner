@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
+    long timeout = 1665320400000l;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button btn = findViewById(R.id.enterButton);
+        Button btn3 = findViewById(R.id.enterButton2);
         Button btn2 = findViewById(R.id.editorButton);
 
         YSharedPreferences.init(this);
@@ -28,8 +30,19 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "注意安全，准备跑。", Toast.LENGTH_SHORT).show();
                 long l = System.currentTimeMillis();
                 Log.e("***", "time:" + l);
-                if (l < 1665234000000l) {
+                if (l < timeout) {
                     startActivity(new Intent(MainActivity.this, BJCodeActivity.class));
+                }
+            }
+        });
+        btn3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "可以不进门吗？", Toast.LENGTH_SHORT).show();
+                long l = System.currentTimeMillis();
+                Log.e("***", "time:" + l);
+                if (l < timeout) {
+                    startActivity(new Intent(MainActivity.this, EnterGate.class));
                 }
             }
         });
