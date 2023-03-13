@@ -479,6 +479,10 @@ public class MainActivity extends BaseActvity {
                     }
                 }, 2000);
                 setData();
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.QUERY_ALL_PACKAGES) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.QUERY_ALL_PACKAGES}, 43);
+                    return;
+                }
             }
         });
     }
@@ -486,7 +490,7 @@ public class MainActivity extends BaseActvity {
     private void setData() {
         int yodo1Count = 0, userAppCount = 0;
         PackageManager pm = getPackageManager();
-        List<PackageInfo> installedPackages = pm.getInstalledPackages(0);
+        List<PackageInfo> installedPackages = pm.getInstalledPackages(PackageManager.MATCH_UNINSTALLED_PACKAGES);
         ArrayList<AppInfoModel> infos = new ArrayList<>();
         for (PackageInfo info : installedPackages) {
             AppInfoModel appInfoModel = new AppInfoModel();
