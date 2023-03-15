@@ -130,39 +130,4 @@ public class SHAUtils {
         return debuggable;
     }
 
-    /**
-     * 获取App 证书对象
-     */
-    public static X509Certificate getX509Certificate(Signature[] signatures) {
-        try {
-            CertificateFactory cf = CertificateFactory.getInstance("X.509");
-            ByteArrayInputStream stream = new ByteArrayInputStream(signatures[0].toByteArray());
-            X509Certificate cert = (X509Certificate) cf.generateCertificate(stream);
-            return cert;
-        } catch (Exception e) {
-        }
-        return null;
-    }
-
-    public static String signatureName(Signature[] signatures) {
-        try {
-            for (int i = 0, c = signatures.length; i < c; i++) {
-                CertificateFactory cf = CertificateFactory.getInstance("X.509");
-                ByteArrayInputStream stream = new ByteArrayInputStream(signatures[i].toByteArray());
-                X509Certificate cert = (X509Certificate) cf.generateCertificate(stream);
-
-                String pubKey = cert.getPublicKey().toString();   //公钥
-                String signNumber = cert.getSerialNumber().toString();
-                LogUtils.e("signName:", cert.getSigAlgName());//算法名
-                LogUtils.e("pubKey:", pubKey);
-                LogUtils.e("signNumber:", signNumber);//证书序列编号
-                LogUtils.e("subjectDN:", cert.getSubjectDN().toString());
-
-                LogUtils.e("after before", cert.getNotAfter() + "--" + cert.getNotBefore());
-            }
-        } catch (Exception e) {
-        }
-        return "";
-    }
-
 }

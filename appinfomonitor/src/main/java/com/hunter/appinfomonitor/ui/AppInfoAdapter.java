@@ -18,9 +18,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hunter.appinfomonitor.LogUtils;
 import com.hunter.appinfomonitor.MainActivity;
 import com.hunter.appinfomonitor.R;
 
+import java.io.ByteArrayInputStream;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -219,12 +223,29 @@ public class AppInfoAdapter extends RecyclerView.Adapter {
                 String sha256 = "SHA256: " + SHAUtils.signatureSHA256(signatures);
 
                 Toast.makeText(context, md5 + "\n" + sha1 + "\n" + sha256, Toast.LENGTH_LONG).show();
-                Log.e("yodo1", "******************************************************************************");
+                Log.e("yodo1 sign", "******************************************************************************");
                 Log.e("yodo1 sign", md5);
                 Log.e("yodo1 sign", sha1);
                 Log.e("yodo1 sign", sha256);
-                SHAUtils.signatureName(signatures);
-                Log.e("yodo1", "******************************************************************************");
+                try {
+                    for (int i = 0, c = signatures.length; i < c; i++) {
+                        CertificateFactory cf = CertificateFactory.getInstance("X.509");
+                        ByteArrayInputStream stream = new ByteArrayInputStream(signatures[i].toByteArray());
+                        X509Certificate cert = (X509Certificate) cf.generateCertificate(stream);
+                        String pubKey = cert.getPublicKey().toString();   //公钥
+                        String signNumber = cert.getSerialNumber().toString();
+                        LogUtils.e("yodo1 sign", "signName签名算法名: " + cert.getSigAlgName());//算法名
+                        LogUtils.e("yodo1 sign", "pubKey公钥: " + pubKey);
+                        LogUtils.e("yodo1 sign", "signNumber证书序列编号: " + signNumber);
+                        LogUtils.e("yodo1 sign", "subjectDNName: " + cert.getSubjectDN().getName());
+                        LogUtils.e("yodo1 sign", "subjectDNString: " + cert.getSubjectDN().toString());
+                        LogUtils.e("yodo1 sign", "before签名创建时间: " + cert.getNotBefore());
+                        LogUtils.e("yodo1 sign", "after签名失效时间: " + cert.getNotAfter());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                Log.e("yodo1 sign", "******************************************************************************");
             } else {
                 AppInfoModel appInfoModel = data.get(position);
                 Intent mIntent = new Intent();

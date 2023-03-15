@@ -6,7 +6,10 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.content.pm.SigningInfo;
+import android.os.Build;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -42,13 +45,7 @@ public class SysUtils {
         try {
             PackageManager manager = ctx.getPackageManager();
             PackageInfo packageInfo = manager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
-            Signature[] signatures = packageInfo.signatures;
-//            StringBuilder sb = new StringBuilder();
-//            for (Signature signature : signatures) {
-//                sb.append(signature.toCharsString());
-//            }
-//            return sb.toString();
-            return signatures;
+            return packageInfo.signatures;
         } catch (Exception e) {
             e.printStackTrace();
         }

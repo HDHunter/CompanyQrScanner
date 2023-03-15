@@ -481,7 +481,6 @@ public class MainActivity extends BaseActvity {
                 setData();
                 if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.QUERY_ALL_PACKAGES) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.QUERY_ALL_PACKAGES}, 43);
-                    return;
                 }
             }
         });
