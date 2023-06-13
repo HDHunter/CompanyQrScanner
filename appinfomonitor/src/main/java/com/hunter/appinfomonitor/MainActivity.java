@@ -520,8 +520,7 @@ public class MainActivity extends BaseActvity {
         StringBuilderPrinter ps = new StringBuilderPrinter(sb);
         String display = "Display:" + Build.DISPLAY;
         ps.println(display);
-        String print = "FingerPrint:";
-        ps.println(Build.FINGERPRINT);
+        String print = "FingerPrint:" + Build.FINGERPRINT;
         ps.println(print);
         ps.println("");
         String hardware = "HardWare:" + Build.HARDWARE;
@@ -530,10 +529,12 @@ public class MainActivity extends BaseActvity {
         ps.println(host);
         String id = "ID:" + Build.ID;
         ps.println(id);
-        String msnufactur = "Manufacturer:" + Build.MANUFACTURER;
-        ps.println(msnufactur);
-        String model = "Module:" + Build.MODEL;
+        String Manufacturer = "Manufacturer:" + Build.MANUFACTURER;
+        ps.println(Manufacturer);
+        String model = "Model:" + Build.MODEL;
         ps.println(model);
+        String brand = "brand:" + Build.BRAND;
+        ps.println(brand);
         String product = "Product:" + Build.PRODUCT;
         ps.println(product);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {

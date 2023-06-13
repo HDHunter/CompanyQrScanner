@@ -8,8 +8,8 @@ android {
         applicationId "com.hunter.appinfomonitor"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 20220804
-        versionName "20220804"
+        versionCode 20230613
+        versionName "20230613"
     }
 
     signingConfigs {
@@ -89,7 +89,7 @@ dependencies {
     // 下面各SDK根据宿主App是否使用相关业务按需引入。
     // OAID目前为目前国内市场主流的Android Q设备标识，可根据需要选择。
     // 友盟统计SDK
-    api 'com.umeng.umsdk:common:9.4.4'// 必选
-    api 'com.umeng.umsdk:asms:1.4.1'// 必选
-    api 'com.umeng.umsdk:apm:1.5.2'
+    api 'com.umeng.umsdk:common:9.6.1'// 必选
+    api 'com.umeng.umsdk:asms:1.8.0'// 必选
+    api 'com.umeng.umsdk:apm:1.9.1'
 }
