@@ -50,6 +50,7 @@
 
         <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="fullSensor">
             <intent-filter>
@@ -84,6 +85,7 @@
         <activity android:name=".yodo1page.PaDownloadSelectListActivity" />
         <activity
             android:name=".NFCActivity"
+            android:exported="true"
             android:launchMode="singleInstance">
 
             <intent-filter>
@@ -114,6 +116,7 @@
             android:name=".floatui.WatchingAccessibilityService"
             android:description="@string/app_name"
             android:enabled="@bool/use_accessibility_service"
+            android:exported="true"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
@@ -128,6 +131,7 @@
         <service
             android:name=".QuickSettingTileService"
             android:enabled="@bool/qs_tile_service_availability"
+            android:exported="true"
             android:icon="@drawable/ic_notification"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
@@ -141,7 +145,9 @@
         </service>
         <service android:name=".yodo1page.DownloadServerice" />
 
-        <receiver android:name=".floatui.NotificationActionReceiver">
+        <receiver
+            android:name=".floatui.NotificationActionReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="${applicationId}.ACTION_NOTIFICATION_RECEIVER" />
             </intent-filter>

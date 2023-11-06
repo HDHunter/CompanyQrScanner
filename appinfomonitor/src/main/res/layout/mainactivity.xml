@@ -104,21 +104,6 @@
             tools:text="系统应用：10个，用户应用2个，yodo1应用1个" />
 
         <TextView
-            android:id="@+id/togglebutton4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#50303030"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:paddingLeft="10dp"
-            android:paddingTop="4dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="4dp"
-            android:text="yodo1开日志"
-            android:textAllCaps="false"
-            android:textSize="10sp" />
-
-        <TextView
             android:id="@+id/togglebutton6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -126,7 +111,7 @@
             android:minWidth="0dp"
             android:minHeight="0dp"
             android:padding="4dp"
-            android:text="yodo1关日志"
+            android:text="yodo1关旧日志"
             android:textAllCaps="false"
             android:textSize="10sp" />
 

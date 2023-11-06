@@ -49,7 +49,6 @@ import com.hunter.appinfomonitor.yodo1page.Yodo1Activity;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -277,61 +276,6 @@ public class MainActivity extends BaseActvity {
             }
         });
         //写日志
-        findViewById(R.id.togglebutton4).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 55);
-                    return;
-                }
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-//                    Toast.makeText(MainActivity.this, "Android11及之上无法开启日志", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-                // 定义文件内容字符串
-                boolean isDebugLogEnabled = false;
-                String adsFlag = ".yodo1ads";
-                String str = readFilesFromSDCard(adsFlag);
-                if (!TextUtils.isEmpty(str) && str.contains("openYodo1Log")) {
-                    isDebugLogEnabled = true;
-                }
-                if (!TextUtils.isEmpty(str)) {
-                    Log.e("文件.yodo1ads内容：", str);
-                }
-                if (str == null || !str.contains("openYodo1Log")) {
-                    Toast.makeText(MainActivity.this, "openYodo1Log不存在，开始创建", Toast.LENGTH_SHORT).show();
-                    if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                        try {
-                            File testFile = new File(Environment.getExternalStorageDirectory(), adsFlag);
-                            if (!testFile.exists()) {
-                                testFile.createNewFile();
-                            }
-                            FileOutputStream fileOutputStream = new FileOutputStream(testFile);
-                            if (TextUtils.isEmpty(str)) {
-                                str = "openYodo1Log";
-                            } else {
-                                str += "\nopenYodo1Log";
-                            }
-                            fileOutputStream.write(str.getBytes());
-                            fileOutputStream.flush();
-                            fileOutputStream.close();
-                        } catch (Exception e) {
-                            Log.d("zzzzzz", "yodo1 缺少SD卡权限  读取文件失败");
-                            e.printStackTrace();
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1000);
-                            }
-                        }
-                    }
-                }
-                if (!TextUtils.isEmpty(str)) {
-                    String s = str.contains("openYodo1Log") ? "全局debugLog标记成功" : "全局debugLog标记开启失败";
-                    Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(MainActivity.this, "全局debugLog标记开启失败", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
         //系统信息
         findViewById(R.id.togglebutton5).setOnClickListener(new View.OnClickListener() {
             @Override
