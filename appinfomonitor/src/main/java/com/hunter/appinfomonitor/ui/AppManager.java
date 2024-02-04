@@ -102,7 +102,7 @@ public class AppManager {
             /*Intent intent = new Intent(context, MainActivity.class);  
             PendingIntent restartIntent = PendingIntent.getActivity(    
             		context, 0, intent,    
-                    Intent.FLAG_ACTIVITY_NEW_TASK);                                                 
+                    Intent.FLAG_ACTIVITY_NEW_TASK | PendingIntent.FLAG_IMMUTABLE);
             //退出程序                                          
             AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);    
             mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 1000,    

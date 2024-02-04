@@ -34,7 +34,7 @@ public class NotificationActionReceiver extends BroadcastReceiver {
         if (!SPHelper.isNotificationToggleEnabled(context)) {
             return;
         }
-        PendingIntent pIntent = PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0);
+        PendingIntent pIntent = PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_IMMUTABLE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setContentTitle(context.getString(R.string.is_running,
                         context.getString(R.string.app_name)))

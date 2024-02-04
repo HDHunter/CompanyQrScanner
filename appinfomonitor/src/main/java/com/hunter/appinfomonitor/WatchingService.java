@@ -62,7 +62,7 @@ public class WatchingService extends Service {
 
         PendingIntent restartServicePendingIntent = PendingIntent.getService(
                 getApplicationContext(), 1, restartServiceIntent,
-                PendingIntent.FLAG_ONE_SHOT);
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
         AlarmManager alarmService = (AlarmManager) getApplicationContext()
                 .getSystemService(Context.ALARM_SERVICE);
         alarmService.set(AlarmManager.ELAPSED_REALTIME,

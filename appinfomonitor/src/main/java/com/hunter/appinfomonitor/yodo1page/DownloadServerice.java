@@ -319,7 +319,7 @@ public class DownloadServerice extends Service implements FetchListener {
         super.onCreate();
         getInstance();
         String CHANNEL_ID = getPackageName() + ".downloader";
-        PendingIntent intent = PendingIntent.getActivity(this, 1000, new Intent(this, MainActivity.class), PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent intent = PendingIntent.getActivity(this, 1000, new Intent(this, MainActivity.class), PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
 
         NotificationChannel notificationChannel = null;
