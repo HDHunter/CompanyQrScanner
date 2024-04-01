@@ -11,9 +11,45 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="false"
-
         android:orientation="vertical"
-        android:padding="8dp">
+        android:padding="4dp">
+
+        <TextView
+            android:id="@+id/app_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DeepLink深度链接测试:"
+            android:textColor="#808080"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/deeplink"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text=""
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/godeep"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:text="View/Jump"
+                android:textAllCaps="false" />
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/ota_icon"
@@ -95,7 +131,6 @@
             app:srcCompat="@drawable/mas_logo" />
 
         <TextView
-            android:id="@+id/device_model_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Device Model"
@@ -108,12 +143,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:text="Hello World!"
+            android:text=""
             android:textColor="#000000"
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/device_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Device ID(IMEI)"
@@ -131,7 +165,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="Hello World!"
+                android:text=""
                 android:textColor="#000000"
                 android:textSize="16sp" />
 
@@ -146,7 +180,6 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/device_name2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Device ID(GAID)"
@@ -164,7 +197,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="Hello World!"
+                android:text=""
                 android:textColor="#000000"
                 android:textSize="16sp" />
 
@@ -179,7 +212,6 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/device_name3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Device ID(OAID)"
@@ -197,7 +229,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="Hello World!"
+                android:text=""
                 android:textColor="#000000"
                 android:textSize="16sp" />
 

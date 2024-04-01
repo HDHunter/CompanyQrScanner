@@ -6,15 +6,13 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -27,6 +25,7 @@ import android.widget.Toast;
 
 import com.hunter.appinfomonitor.AdvertisingIdClient;
 import com.hunter.appinfomonitor.BaseActvity;
+import com.hunter.appinfomonitor.LogUtils;
 import com.hunter.appinfomonitor.R;
 import com.hunter.appinfomonitor.network.okbiz.GunqiuApi;
 import com.hunter.appinfomonitor.network.okbiz.RxResponse;
@@ -35,8 +34,10 @@ import com.hunter.appinfomonitor.network.okbiz.Yodo1SharedPreferences;
 import com.hunter.appinfomonitor.ui.AppManager;
 import com.hunter.appinfomonitor.ui.JsonUtils;
 import com.hunter.appinfomonitor.ui.OtaAPi;
+import com.hunter.appinfomonitor.ui.SysUtils;
 import com.hunter.appinfomonitor.yodo1bean.DemoHelper;
 import com.hunter.appinfomonitor.yodo1bean.OTALoginBean;
+import com.hunter.appinfomonitor.yodo1bean.PhoneUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,9 +50,9 @@ import java.util.HashMap;
 public class Yodo1Activity extends BaseActvity {
 
 
-    private TextView deviceIdImeiValue, deviceIdImeiName, deviceModleValue, console, otaname, otapwd;
+    private TextView deviceIdImeiValue, deviceModleValue, console, otaname, otapwd;
     private ProgressDialog progressDialog;
-    private TextView deviceIdGaidName, deviceIdGaidValue, deviceIdOaidName, deviceIdOaidValue;
+    private TextView deviceIdGaidValue, deviceIdOaidValue;
     private EditText input;
     private AsyncTask<Void, Void, String> taskGaid = new AsyncTask<Void, Void, String>() {
         @Override
@@ -115,9 +116,6 @@ public class Yodo1Activity extends BaseActvity {
         final ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         deviceIdImeiValue = findViewById(R.id.device_id);
         deviceModleValue = findViewById(R.id.device_model_id);
-        deviceIdImeiName = findViewById(R.id.device_name);
-        deviceIdGaidName = findViewById(R.id.device_name2);
-        deviceIdOaidName = findViewById(R.id.device_name3);
         deviceIdOaidValue = findViewById(R.id.deviceid3);
         deviceIdGaidValue = findViewById(R.id.deviceid2);
         otaname = findViewById(R.id.otaname);
@@ -135,6 +133,25 @@ public class Yodo1Activity extends BaseActvity {
             }
         });
         console = findViewById(R.id.console);
+        findViewById(R.id.godeep).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText deeplink = findViewById(R.id.deeplink);
+                String s = deeplink.getText().toString();
+                if (!TextUtils.isEmpty(s)) {
+                    try {
+                        Uri uri = Uri.parse(s);
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(Yodo1Activity.this, "输入地址有问题。", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                hideInput();
+            }
+        });
         findViewById(R.id.copymas).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -231,6 +248,8 @@ public class Yodo1Activity extends BaseActvity {
                 otapwd.setText(password);
             }
         });
+        TextView info = findViewById(R.id.app_info);
+        info.setText("版本号:" + SysUtils.getVersionCode(this) + " 版本名称:" + SysUtils.getVersionName(this));
         AppManager.getAppManager().addActivity(this);
     }
 
@@ -304,15 +323,17 @@ public class Yodo1Activity extends BaseActvity {
     @Override
     public void onResume() {
         super.onResume();
-        deviceIdImeiValue.setText(null);
-        String imei = getIMEI(Yodo1Activity.this);
-        if (!TextUtils.isEmpty(imei)) {
-            deviceIdImeiValue.setText(imei);
-        }
+        deviceIdImeiValue.setText(PhoneUtil.getIMEI(this));
         new DemoHelper(new DemoHelper.AppIdsUpdater() {
             @Override
             public void OnIdsAvalid(@NonNull String ids) {
-                deviceIdOaidValue.setText(ids);
+                LogUtils.e("Oaid", ids);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        deviceIdOaidValue.setText(ids);
+                    }
+                });
             }
         }).getDeviceIds(Yodo1Activity.this);
     }
@@ -320,12 +341,7 @@ public class Yodo1Activity extends BaseActvity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (taskGaid != null) {
-            taskGaid.execute();
-        }
-        if (taskOaid != null) {
-            taskOaid.execute();
-        }
+        Toast.makeText(this, "赋予权限，请重新启动", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -340,21 +356,6 @@ public class Yodo1Activity extends BaseActvity {
         AppManager.getAppManager().removeActivity(this);
         taskGaid = null;
         taskOaid = null;
-    }
-
-    private String getIMEI(Context context) {
-        String imei = "";
-        int permissionCheck = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE);
-        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            if (telephonyManager != null) {
-                imei = telephonyManager.getDeviceId();
-                if (TextUtils.isEmpty(imei) || "0".equals(imei) || "000000000000000".equals(imei)) {
-                    imei = "";
-                }
-            }
-        }
-        return imei;
     }
 
     public void loading() {

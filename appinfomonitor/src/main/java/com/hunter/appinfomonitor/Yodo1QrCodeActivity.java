@@ -131,7 +131,6 @@ public class Yodo1QrCodeActivity extends BaseActvity implements QRCodeView.Deleg
                         mZBarView.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-
                                 Intent intent = new Intent(Yodo1QrCodeActivity.this, DownloadListActivity.class);
                                 startActivityForResult(intent, 1111);
                             }
